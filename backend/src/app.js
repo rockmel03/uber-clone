@@ -7,10 +7,14 @@ const app = express();
 
 //middlewares
 app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
-  // throw new Error("this is a test error")
   res.send("hellow world!");
 });
 
-module.exports = app; 
+// routes
+app.use("/users", require("./routes/user.routes"));
+
+module.exports = app;
