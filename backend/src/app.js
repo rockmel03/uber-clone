@@ -2,6 +2,8 @@ const dotenv = require("dotenv");
 dotenv.config({ path: "src/.env" });
 const cors = require("cors");
 
+const ApiError = require("./utils/ApiError");
+const errorHandler = require("./utils/errorHandler");
 const express = require("express");
 const app = express();
 
@@ -16,5 +18,13 @@ app.get("/", (req, res) => {
 
 // routes
 app.use("/users", require("./routes/user.routes"));
+
+// 404 route handler middleware
+app.use("/*", (req, res, next) => {
+  const error = ApiError.notFoundError(req.originalUrl);
+  next(error);
+});
+// default error handler
+app.use(errorHandler);
 
 module.exports = app;

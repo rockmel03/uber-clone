@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const { response } = require("../app");
 
 async function connectToDb() {
   try {
@@ -7,7 +6,7 @@ async function connectToDb() {
     console.log("connected to database! host : ", response.connection.host);
   } catch (err) {
     console.error("failed to connect database");
-    throw err;
+    process.exit(1);
   }
 }
 

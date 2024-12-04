@@ -9,9 +9,8 @@ connectToDb()
   .then(() => {
     server.listen(port, () => {
       console.log("server is listning on port :", port);
-    }); 
+    });
   })
   .catch((err) => {
     console.error(err);
-    process.exit(1);
   });
