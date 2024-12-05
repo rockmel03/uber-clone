@@ -28,6 +28,12 @@ module.exports.registerUser = asyncHandler(async (req, res) => {
   delete userData.password;
   res
     .status(201)
+    .cookie("token", token, {
+      httpOnly: true, // Prevent access via JavaScript
+      secure: process.env.NODE_ENV === "production", // HTTPS only in production
+      expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // Expires in 24 hours
+      sameSite: "strict", // Mitigate CSRF attacks
+    })
     .json(
       new ApiResponse(
         202,
@@ -56,6 +62,12 @@ module.exports.loginUser = asyncHandler(async (req, res) => {
 
   res
     .status(200)
+    .cookie("token", token, {
+      httpOnly: true, // Prevent access via JavaScript
+      secure: process.env.NODE_ENV === "production", // HTTPS only in production
+      expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // Expires in 24 hours
+      sameSite: "strict", // Mitigate CSRF attacks
+    })
     .json(new ApiResponse(200, { token, user: userData }, "Login Successful!"));
 });
 

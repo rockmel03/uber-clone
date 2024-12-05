@@ -1,6 +1,7 @@
 const dotenv = require("dotenv");
 dotenv.config({ path: "src/.env" });
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 
 const ApiError = require("./utils/ApiError");
 const errorHandler = require("./utils/errorHandler");
@@ -9,6 +10,7 @@ const app = express();
 
 //middlewares
 app.use(cors());
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
