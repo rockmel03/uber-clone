@@ -7,8 +7,7 @@ const ApiResponse = require("../utils/ApiResponse");
 
 module.exports.registerUser = asyncHandler(async (req, res) => {
   const errors = validationResult(req);
-  if (!errors.isEmpty())
-    return res.status(400).json({ errors: errors.array() });
+  if (!errors.isEmpty()) throw ApiError.validationError(errors.array());
 
   const { fullname, email, password } = req.body;
 
@@ -25,10 +24,37 @@ module.exports.registerUser = asyncHandler(async (req, res) => {
   });
 
   const token = user.generateAuthToken();
-
+  const userData = user.toObject();
+  delete userData.password;
   res
     .status(201)
     .json(
-      new ApiResponse(202, { token, user }, "User Registered Sucessfully!")
+      new ApiResponse(
+        202,
+        { token, user: userData },
+        "User Registered Sucessfully!"
+      )
     );
+});
+
+module.exports.loginUser = asyncHandler(async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) throw ApiError.validationError(errors.array());
+
+  const { email, password } = req.body;
+
+  const user = await User.findOne({ email }).select("+password");
+  if (!user) throw new ApiError(400, "Invalid email or passwerd");
+
+  const isMatch = await user.comparePassword(password);
+  if (!isMatch) throw new ApiError(400, "Invalid email or passwerd");
+
+  const token = user.generateAuthToken();
+
+  const userData = user.toObject();
+  delete userData.password;
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, { token, user: userData }, "Login Successful!"));
 });
