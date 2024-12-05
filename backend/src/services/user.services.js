@@ -1,4 +1,5 @@
 const User = require("../models/user.model");
+const ApiError = require("../utils/ApiError");
 
 module.exports.createUser = async ({
   firstname,
@@ -7,9 +8,9 @@ module.exports.createUser = async ({
   password,
 }) => {
   if (!firstname || !email || !password)
-    throw new Error("All fields are required");
+    throw ApiError.validationError(["All fields are required"]);
 
-  const user = User.create({
+  const user = await User.create({
     fullname: {
       firstname,
       lastname,
