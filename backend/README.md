@@ -104,6 +104,42 @@
     "message": "Error message"
   }
   ```
+### 3. Get User Profile
+
+- **Endpoint:** `/users/profile`
+- **Method:** `GET`
+- **Description:** This endpoint retrieves the profile information of the authenticated user.
+
+#### Authentication
+- This endpoint requires a valid JWT token to be provided in the Authorization header or as a cookie.
+
+#### Responses
+- **200 OK**
+  - **Description:** User profile retrieved successfully.
+  - **Response Body:**
+  ```json
+  {
+    "statusCode": 200,
+    "data": {
+      "fullname": {
+        "firstname": "string",
+        "lastname": "string"
+      },
+      "email": "string"
+    },
+    "message": "Success"
+  }
+  ```
+
+- **401 Unauthorized**
+  - **Description:** Authorization token is missing or invalid.
+  - **Response Body:**
+  ```json
+  {
+    "message": "Authorization token is missing or invalid",
+    "type": "Authorization_error"
+  }
+  ```
 
 ### Error Handling
 All errors are handled using a centralized error handler, which returns appropriate status codes and messages based on the error type.

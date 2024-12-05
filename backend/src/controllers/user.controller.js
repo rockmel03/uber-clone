@@ -58,3 +58,8 @@ module.exports.loginUser = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, { token, user: userData }, "Login Successful!"));
 });
+
+module.exports.getUserProfile = asyncHandler(async (req, res) => {
+  const userData = req.user;
+  return res.status(200).json(ApiResponse.success(userData));
+});
