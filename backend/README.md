@@ -140,6 +140,35 @@
     "type": "Authorization_error"
   }
   ```
+### 4. Logout User
+
+- **Endpoint:** `/users/logout`
+- **Method:** `GET`
+- **Description:** This endpoint allows an authenticated user to log out by invalidating their session.
+
+#### Authentication
+- This endpoint requires a valid JWT token to be provided in the Authorization header or as a cookie.
+
+#### Responses
+- **200 OK**
+  - **Description:** User logged out successfully.
+  - **Response Body:**
+  ```json
+  {
+    "statusCode": 200,
+    "message": "Logged out successfully"
+  }
+  ```
+
+- **401 Unauthorized**
+  - **Description:** Authorization token is missing or invalid.
+  - **Response Body:**
+  ```json
+  {
+    "message": "Authorization token is missing or invalid",
+    "type": "Authorization_error"
+  }
+  ```
 
 ### Error Handling
 All errors are handled using a centralized error handler, which returns appropriate status codes and messages based on the error type.
