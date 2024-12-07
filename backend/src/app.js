@@ -19,7 +19,9 @@ app.get("/", (req, res) => {
 });
 
 // routes
+app.use("/auth", require("./routes/auth.routes"));
 app.use("/users", require("./routes/user.routes"));
+app.use("/captains", require("./routes/captain.routes"));
 
 // 404 route handler middleware
 app.use("/*", (req, res, next) => {

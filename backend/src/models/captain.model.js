@@ -2,6 +2,12 @@ const mongoose = require("mongoose");
 
 const captainSchema = new mongoose.Schema(
   {
+    userId: {
+      type: mongoose.Types.ObjectId,
+      ref: "User",
+      required: true,
+      unique: true,
+    },
     status: {
       type: String,
       enum: ["active", "inactive"],

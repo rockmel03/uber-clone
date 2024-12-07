@@ -1,11 +1,11 @@
+const { default: mongoose } = require("mongoose");
 const Captain = require("../models/captain.model");
 const ApiError = require("../utils/ApiError");
+const User = require("../models/user.model");
 
 module.exports.createCaptain = async ({
-  color,
-  plate,
-  capacity,
-  vehicleType,
+  vehicle: { color, plate, capacity, vehicleType },
+  userId,
 }) => {
   if ([color, plate, capacity, vehicleType].some((val) => val === ""))
     throw ApiError.validationError(["All fields are required"]);
@@ -23,9 +23,40 @@ module.exports.createCaptain = async ({
   };
 
   try {
-    const captain = await Captain.create({ vehicle });
+    const captain = await Captain.create({ userId, vehicle });
     return captain;
   } catch (error) {
     throw new ApiError(500, "Failed to create captain", [error]);
   }
+};
+
+module.exports.captainProfile = async (userId) => {
+  const captainData = await User.aggregate([
+    {
+      $match: {
+        _id: new mongoose.Types.ObjectId(userId), // Match a specific user (optional)
+      },
+    },
+    {
+      $lookup: {
+        from: "captains", // The target collection (captains)
+        localField: "captain", // Field in users to join on (stores captain._id)
+        foreignField: "_id", // Field in captains to join on
+        as: "captain", // The resulting array field name
+      },
+    },
+    {
+      $unwind: {
+        path: "$captain",
+        preserveNullAndEmptyArrays: true, // Retain users even if they have no captain
+      },
+    },
+    {
+      $project: {
+        password: 0, // Exclude the password field
+      },
+    },
+  ]);
+
+  return captainData;
 };
