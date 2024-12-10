@@ -50,7 +50,7 @@ export const Login = () => {
   };
 
   return (
-    <section onSubmit={handleFormSubmit}>
+    <section className="p-5 pt-20">
       {errMsg && (
         <p
           ref={errRef}
@@ -59,7 +59,7 @@ export const Login = () => {
           {errMsg}
         </p>
       )}
-      <form className="flex flex-col gap-2">
+      <form onSubmit={handleFormSubmit} className="flex flex-col gap-2">
         <h3 className="text-[1.5em] font-medium">What&lsquo;s your Email</h3>
         <InputFeild
           type="email"

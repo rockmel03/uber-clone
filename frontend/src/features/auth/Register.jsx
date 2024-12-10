@@ -122,7 +122,7 @@ export const Register = () => {
   ));
 
   return (
-    <section>
+    <section className="p-5 pt-20">
       {errMsg && (
         <p
           ref={errRef}
