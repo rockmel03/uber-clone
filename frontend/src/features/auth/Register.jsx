@@ -1,25 +1,32 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import InputFeild from "../../components/InputFeild";
+import api from "../../api/axios";
+import { useAuth } from "../../hooks/useAuth";
 
 const rolesList = ["user", "captain"];
+const initialFormData = {
+  firstname: "",
+  lastname: "",
+  email: "",
+  password: "",
+  vNumber: "",
+  vColor: "",
+  vCapacity: "",
+  vType: "",
+};
 
 export const Register = () => {
+  const { setAuth } = useAuth();
+
   const emailRef = useRef(null);
+  const errRef = useRef(null);
 
-  const [formData, setFormData] = useState({
-    firstname: "",
-    lastname: "",
-    email: "",
-    password: "",
-    vNumber: "",
-    vColor: "",
-    vCapacity: "",
-    vType: "",
-  });
+  const [formData, setFormData] = useState(initialFormData);
   const [accountType, setAccountType] = useState("user");
+  const [errMsg, setErrMsg] = useState("");
 
-  const handleChange = (e) => {
+  const handleChange = async (e) => {
     const fieldName = e.target.name;
     const data = e.target.value;
     // check
@@ -32,25 +39,77 @@ export const Register = () => {
     });
   };
 
+  const registerUser = async (data) => {
+    try {
+      const response = await api.post("/auth/register", data);
+      console.log(response);
+
+      // set data to state
+      const { token, user } = response.data.data;
+      setAuth(token, user);
+
+      //reset form
+      setFormData(initialFormData);
+    } catch (error) {
+      setErrMsg(error.response?.data?.message || "Registration Failed");
+    }
+  };
+
   useEffect(() => {
     emailRef.current.focus();
   }, []);
 
-  const handleFormSubmit = (e) => {
+  useEffect(() => {
+    setErrMsg("");
+  }, [formData]);
+
+  useEffect(() => {
+    if (errMsg) errRef.current.focus();
+  }, [errMsg]);
+
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-
     console.log(formData);
+    const {
+      firstname,
+      lastname,
+      email,
+      password,
+      vNumber,
+      vColor,
+      vCapacity,
+      vType,
+    } = formData;
 
-    setFormData({
-      firstname: "",
-      lastname: "",
-      email: "",
-      password: "",
-      vNumber: "",
-      vColor: "",
-      vCapacity: "",
-      vType: "",
-    });
+    const condition1 = [firstname, lastname, email, password].some(
+      (val) => val == ""
+    );
+    const condition2 =
+      accountType === "captain" &&
+      [vNumber, vColor, vCapacity, vType].some((val) => val == "");
+    if (condition1 || condition2) return setErrMsg("All feilds are required");
+
+    const data = {
+      fullname: {
+        firstname,
+        lastname,
+      },
+      email,
+      password,
+    };
+
+    if (accountType === "captain") {
+      data.roles = ["captain"];
+      data.vehicle = {
+        plate: vNumber,
+        capacity: vCapacity,
+        vehicleType: vType,
+        color: vColor,
+      };
+    }
+    console.log(data);
+    // register user
+    await registerUser(data);
   };
 
   const rolesOptions = rolesList.map((val) => (
@@ -61,6 +120,14 @@ export const Register = () => {
 
   return (
     <section>
+      {errMsg && (
+        <p
+          ref={errRef}
+          className="text-red-500 font-semibold bg-red-200 px-2 py-2 rounded"
+        >
+          {errMsg}
+        </p>
+      )}
       <form onSubmit={handleFormSubmit} className="flex flex-col gap-2">
         <InputFeild
           ref={emailRef}

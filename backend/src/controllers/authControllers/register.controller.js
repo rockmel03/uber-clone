@@ -89,7 +89,7 @@ const register = asyncHandler(async (req, res) => {
     if (user) await User.findByIdAndDelete(user._id);
     if (captain) await Captain.findByIdAndDelete(captain._id);
 
-    throw new ApiError(500, "Registration failed", [error.message]);
+    throw new ApiError(500, "Registration failed", [error]);
   }
 });
 
