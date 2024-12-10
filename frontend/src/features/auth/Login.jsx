@@ -1,40 +1,47 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import InputFeild from "../../components/InputFeild";
 
 export const Login = () => {
   const [email, setEmail] = useState("");
+  const emailRef = useRef(null);
+
   const [password, setPassword] = useState("");
+  const pwdRef = useRef(null);
+
+  useEffect(() => {
+    emailRef.current.focus();
+  }, []);
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+
+    console.log(email, password);
+
+    setEmail("");
+    setPassword("");
+  };
 
   return (
-    <section className="w-full h-screen p-5">
-      <div className="w-24 mb-5">
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Uber_logo_2018.png"
-          alt=""
-        />
-      </div>
+    <section onSubmit={handleFormSubmit}>
       <form className="flex flex-col gap-2">
-        <label className="text-[1.5em] font-medium" htmlFor="email">
-          What&lsquo;s your email
-        </label>
-        <input
+        <h3 className="text-[1.5em] font-medium">What&lsquo;s your Email</h3>
+        <InputFeild
           type="email"
-          id="email"
-          placeholder="email.example.com"
-          className="w-full border rounded-md px-2 py-2 bg-[#eee]"
+          ref={emailRef}
+          placeholder="email@example.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          required
         />
-        <label className="text-[1.5em] font-medium" htmlFor="password">
-          Enter Password
-        </label>
-        <input
+        <h3 className="text-[1.5em] font-medium">Enter Password</h3>
+        <InputFeild
+          ref={pwdRef}
           type="password"
-          id="password"
-          placeholder="Password"
-          className="w-full border rounded-md px-2 py-2 bg-[#eee]"
+          placeholder="Your password..."
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          required
         />
         <button className="w-full border rounded-md px-2 py-2 mt-4 bg-[#111] text-white font-medium text-xl">
           Login

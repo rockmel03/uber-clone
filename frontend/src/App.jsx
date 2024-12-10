@@ -3,12 +3,14 @@ import { Layout } from "./components/Layout";
 import { Login } from "./features/auth/Login";
 import Home from "./pages/Home";
 import { RequireAuth } from "./features/auth/RequireAuth";
+import { Register } from "./features/auth/Register";
 
 const App = () => {
   return (
     <Routes>
-      <Route path="/login" element={<Login />} />
       <Route element={<Layout />}>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route element={<RequireAuth />}>
           <Route index element={<Home />} />
         </Route>
