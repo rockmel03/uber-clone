@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import InputFeild from "../../components/InputFeild";
 import api from "../../api/axios";
 import { useAuth } from "../../hooks/useAuth";
@@ -18,6 +18,9 @@ const initialFormData = {
 
 export const Register = () => {
   const { setAuth } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location?.state?.from?.pathname || "/";
 
   const emailRef = useRef(null);
   const errRef = useRef(null);
@@ -43,13 +46,13 @@ export const Register = () => {
     try {
       const response = await api.post("/auth/register", data);
       console.log(response);
-
       // set data to state
       const { token, user } = response.data.data;
-      setAuth(token, user);
-
+      setAuth({ token, user });
       //reset form
       setFormData(initialFormData);
+      //navigate
+      navigate(from);
     } catch (error) {
       setErrMsg(error.response?.data?.message || "Registration Failed");
     }

@@ -1,29 +1,64 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import InputFeild from "../../components/InputFeild";
+import api from "../../api/axios";
+import { useAuth } from "../../hooks/useAuth";
 
 export const Login = () => {
+  const { setAuth } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location?.state?.from?.pathname || "/";
+
   const [email, setEmail] = useState("");
   const emailRef = useRef(null);
 
   const [password, setPassword] = useState("");
   const pwdRef = useRef(null);
 
+  const [errMsg, setErrMsg] = useState("");
+  const errRef = useRef(null);
+
   useEffect(() => {
     emailRef.current.focus();
   }, []);
 
-  const handleFormSubmit = (e) => {
+  useEffect(() => {
+    if (errMsg) errRef.current.focus();
+  }, [errMsg]);
+
+  useEffect(() => {
+    setErrMsg("");
+  }, [email, password]);
+
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-
+    if (!email || !password) return setErrMsg("All feilds are required");
     console.log(email, password);
-
-    setEmail("");
-    setPassword("");
+    try {
+      const response = await api.post("/auth/login", { email, password });
+      console.log(response);
+      const { token, user } = response.data.data;
+      setAuth({ token, user });
+      setEmail("");
+      setPassword("");
+      navigate(from, { replace: true });
+    } catch (error) {
+      console.log(error);
+      setErrMsg(error.response?.data?.message || "Login Failed");
+    }
   };
 
   return (
     <section onSubmit={handleFormSubmit}>
+      {errMsg && (
+        <p
+          ref={errRef}
+          className="text-red-500 font-semibold bg-red-200 px-2 py-2 rounded"
+        >
+          {errMsg}
+        </p>
+      )}
       <form className="flex flex-col gap-2">
         <h3 className="text-[1.5em] font-medium">What&lsquo;s your Email</h3>
         <InputFeild
