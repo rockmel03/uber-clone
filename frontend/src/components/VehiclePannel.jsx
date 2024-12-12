@@ -1,0 +1,73 @@
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { useRef } from "react";
+
+export const VehiclePannel = ({ isOpen, vehicleData, setIsOpen }) => {
+  const vehiclePannleRef = useRef(null);
+  useGSAP(() => {
+    if (isOpen) {
+      gsap.to(vehiclePannleRef.current, {
+        transform: "translateY(0)",
+        duration: 0.5,
+      });
+    } else {
+      gsap.to(vehiclePannleRef.current, {
+        transform: "translateY(100%)",
+        duration: 0.5,
+      });
+    }
+  }, [isOpen]);
+
+  return (
+    <div
+      ref={vehiclePannleRef}
+      className="bg-white fixed z-10 p-5 pt-10 flex flex-col gap-2 translate-y-full"
+    >
+      <div
+        onClick={() => setIsOpen(false)}
+        className="w-fit fixed top-0 left-1/2 -translate-x-1/2 text-center"
+      >
+        <span className=" text-3xl text-gray-300">
+          <i className="ri-arrow-down-wide-fill"></i>
+        </span>
+      </div>
+      <h2 className=" text-2xl font-semibold mb-2">Select a vehicle</h2>
+
+      {vehicleData.length > 0 &&
+        vehicleData.map((vehicle, idx) => {
+          return (
+            <div
+              key={idx}
+              className="grid grid-cols-[1fr_2fr_1fr] items-center p-3 border-2 active:border-black rounded-lg"
+            >
+              <div>
+                <img
+                  src={vehicle.image}
+                  alt={vehicle.type}
+                  className=" w-full h-full object-contain"
+                />
+              </div>
+              <div>
+                <h4 className="text-base font-semibold leading-tight">
+                  {vehicle.title}{" "}
+                  <span>
+                    <span>
+                      <i className="ri-user-3-fill"></i>
+                    </span>{" "}
+                    <span>{vehicle.capacity}</span>
+                  </span>
+                </h4>
+                <h5 className="text-sm font-medium">2 mins away</h5>
+                <p className="text-xs font-medium opacity-70">
+                  Affordable, compact rides
+                </p>
+              </div>
+              <h3 className="font-bold text-lg justify-self-end">
+                ₹{vehicle.fairAmount}
+              </h3>
+            </div>
+          );
+        })}
+    </div>
+  );
+};

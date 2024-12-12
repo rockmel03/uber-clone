@@ -1,10 +1,97 @@
 import { useState } from "react";
 import InputFeild from "../components/InputFeild";
+import { VehiclePannel } from "../components/VehiclePannel";
+import { LocationsPannel } from "../components/LocationsPannel";
+
+import carImage from "../assets/car.webp";
+import autoImage from "../assets/auto.webp";
+import motoImage from "../assets/moto.webp";
+import { SearchForNearbyDrivers } from "../components/SearchForNearbyDrivers";
+
+const vehicleArray = [
+  {
+    title: "UberGo",
+    capacity: 3,
+    type: "car",
+    image: carImage,
+    time: "2 min",
+    fairAmount: 123.1,
+  },
+  {
+    title: "Moto",
+    capacity: 1,
+    type: "motorcycle",
+    image: motoImage,
+    time: "2 min",
+    fairAmount: 65.22,
+  },
+  {
+    title: "Auto",
+    capacity: 3,
+    type: "auto",
+    image: autoImage,
+    time: "2 min",
+    fairAmount: 120.3,
+  },
+];
+
+const locationArray = [
+  {
+    id: 0,
+    title: "Pahadpani, Dhari, Nainital - 263132 uttarakhand",
+  },
+  {
+    id: 1,
+    title: "Shelalekh, Paharpani, Nainital - 263132 uttarakhand",
+  },
+  {
+    id: 2,
+    title: "Nainital - 263132 uttarakhand",
+  },
+];
 
 const Home = () => {
   const [pickup, setPickup] = useState("");
+  const [pickupFocused, setPickupFocused] = useState(false);
+
   const [destination, setDestination] = useState("");
+  const [destniationFocused, setDestinationFocused] = useState(false);
+
   const [pannelOpen, setPannelOpen] = useState(false);
+  const [locations, setLocations] = useState(locationArray);
+
+  const [vehiclePannelOpen, setVehiclePannelOpen] = useState(false);
+  const [vehicleData, setVehicleData] = useState(vehicleArray);
+
+  const [searchVehiclePannelOpen, setSearchVehiclePannelOpen] = useState(false);
+
+  const handlePickupFocus = () => {
+    setPickupFocused(true);
+    setPannelOpen(true);
+    setDestinationFocused(false);
+  };
+
+  const handleDestinationFocus = () => {
+    setDestinationFocused(true);
+    setPannelOpen(true);
+    setPickupFocused(false);
+  };
+
+  const handleLocationClick = (e) => {
+    const findedLocation = locations.find(
+      (item) => item.id === Number(e.target.id)
+    );
+    if (pickupFocused && findedLocation) {
+      setPickup(findedLocation.title);
+    } else if (destniationFocused && findedLocation) {
+      setDestination(findedLocation.title);
+    }
+  };
+
+  const handleNextClick = () => {
+    setPannelOpen(false);
+    setVehiclePannelOpen(true);
+  };
 
   return (
     <section
@@ -14,7 +101,7 @@ const Home = () => {
           "url(https://media.wired.com/photos/59269cd37034dc5f91bec0f1/master/w_1920,c_limit/GoogleMapTA.jpg)",
       }}
     >
-      <form className="p-5 bg-white rounded-lg flex flex-col gap-3 relative z-10">
+      <div className="p-5 bg-white rounded-lg flex flex-col gap-3 relative z-10">
         {pannelOpen ? (
           <div className="w-fit text-2xl" onClick={() => setPannelOpen(false)}>
             <i className="ri-arrow-down-s-line"></i>
@@ -26,17 +113,19 @@ const Home = () => {
           type="text"
           className="pl-12"
           placeholder="Add a pick-up location"
+          autoComplete="off"
           value={pickup}
           onChange={(e) => setPickup(e.target.value)}
-          onFocus={() => setPannelOpen(true)}
+          onFocus={handlePickupFocus}
         />
         <InputFeild
           type="text"
           className="pl-12"
           placeholder="Enter your destination"
+          autoComplete="off"
           value={destination}
           onChange={(e) => setDestination(e.target.value)}
-          onFocus={() => setPannelOpen(true)}
+          onFocus={handleDestinationFocus}
         />
         <div className=" flex justify-between">
           <button
@@ -53,36 +142,25 @@ const Home = () => {
           </button>
 
           <button
-            type="submit"
             disabled={!pickup || !destination}
+            onClick={handleNextClick}
             className="bg-black text-white px-4 rounded-full disabled:opacity-70 disabled:cursor-not-allowed"
           >
             <i className="ri-arrow-right-line"></i>
           </button>
         </div>
-      </form>
-      <div
-        className={`${
-          pannelOpen ? "h-full" : "h-0"
-        } w-full  px-5 bg-white overflow-hidden transition-all duration-500`}
-      >
-        <article className="flex gap-2 rounded-lg p-3 border-2 border-transparent hover:border-black ">
-          <div className="flex-shrink-0 w-10 h-10 bg-[#eee] rounded-full grid place-items-center text-lg">
-            <i className="ri-map-pin-2-fill"></i>
-          </div>
-          <h4 className="text-lg font-semibold leading-tight">
-            Pahadpani, Dhari, Nainital - 263132 uttarakhand
-          </h4>
-        </article>
-        <article className="flex gap-2 rounded-lg p-3 border-2 border-transparent hover:border-black ">
-          <div className="flex-shrink-0 w-10 h-10 bg-[#eee] rounded-full grid place-items-center text-lg">
-            <i className="ri-map-pin-2-fill"></i>
-          </div>
-          <h4 className="text-lg font-semibold leading-tight">
-            Pahadpani, Dhari, Nainital - 263132 uttarakhand
-          </h4>
-        </article>
       </div>
+      <LocationsPannel
+        isOpen={pannelOpen}
+        locations={locations}
+        handleLocationClick={handleLocationClick}
+      />
+      <VehiclePannel
+        isOpen={vehiclePannelOpen}
+        vehicleData={vehicleData}
+        setIsOpen={setVehiclePannelOpen}
+      />
+      <SearchForNearbyDrivers isOpen={searchVehiclePannelOpen} />
     </section>
   );
 };
