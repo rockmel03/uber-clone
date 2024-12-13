@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const { ACCOUNT_TYPES: ROLES } = require("../constants");
 
 const userShema = new mongoose.Schema(
   {
@@ -31,7 +32,7 @@ const userShema = new mongoose.Schema(
     },
     roles: {
       type: [String], // array of strings
-      enum: ["user", "captain"],
+      enum: ROLES,
       default: ["user"],
       required: true,
     },

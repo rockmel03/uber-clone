@@ -6,6 +6,7 @@ const asyncHandler = require("../../utils/asyncHandler");
 const userServices = require("../../services/user.services");
 const captainService = require("../../services/captain.services");
 const ApiResponse = require("../../utils/ApiResponse");
+const { ACCOUNTS_TYPES: ROLES } = require("../../constants");
 
 const register = asyncHandler(async (req, res) => {
   const errors = validationResult(req);
@@ -31,7 +32,7 @@ const register = asyncHandler(async (req, res) => {
 
     // Sanitize and validate roles
     const roles = reqRoles?.length
-      ? reqRoles.filter((role) => ["user", "captain"].includes(role))
+      ? reqRoles.filter((role) => ROLES.includes(role))
       : ["user"];
 
     if (roles.includes("captain")) {

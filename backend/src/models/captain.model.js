@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { VEHICLE_TYPES } = require("../constants");
 
 const captainSchema = new mongoose.Schema(
   {
@@ -34,7 +35,7 @@ const captainSchema = new mongoose.Schema(
       vehicleType: {
         type: String,
         required: true,
-        enum: ["car", "motorcycle", "auto"],
+        enum: VEHICLE_TYPES,
       },
     },
 
