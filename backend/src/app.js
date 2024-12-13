@@ -23,6 +23,7 @@ app.use("/auth", require("./routes/auth.routes"));
 app.use("/users", require("./routes/user.routes"));
 app.use("/captains", require("./routes/captain.routes"));
 app.use("/maps", require("./routes/maps.routes"));
+app.use("/rides", require("./routes/ride.routes"));
 
 // 404 route handler middleware
 app.use("/*", (req, res, next) => {
