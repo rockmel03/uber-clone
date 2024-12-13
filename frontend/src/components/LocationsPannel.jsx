@@ -27,8 +27,8 @@ export const LocationsPannel = (props) => {
       {props.locations.length > 0 &&
         props.locations.map((item) => (
           <div
-            key={item.id}
-            id={item.id}
+            key={item.place_id}
+            id={item.place_id}
             onClick={props.handleLocationClick}
             className="flex gap-2 rounded-lg p-3 border-2 active:border-black "
           >
@@ -36,7 +36,7 @@ export const LocationsPannel = (props) => {
               <i className="ri-map-pin-2-fill"></i>
             </div>
             <h4 className="pointer-events-none text-lg font-semibold leading-tight">
-              {item.title}
+              {item.description}
             </h4>
           </div>
         ))}

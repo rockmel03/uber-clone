@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import InputFeild from "../components/InputFeild";
 import { VehiclePannel } from "../components/VehiclePannel";
 import { LocationsPannel } from "../components/LocationsPannel";
@@ -7,6 +7,7 @@ import carImage from "../assets/car.webp";
 import autoImage from "../assets/auto.webp";
 import motoImage from "../assets/moto.webp";
 import { SearchForNearbyDrivers } from "../components/SearchForNearbyDrivers";
+import { useApiPrivate } from "../hooks/useApiPrivate";
 
 const vehicleArray = [
   {
@@ -35,21 +36,6 @@ const vehicleArray = [
   },
 ];
 
-const locationArray = [
-  {
-    id: 0,
-    title: "Pahadpani, Dhari, Nainital - 263132 uttarakhand",
-  },
-  {
-    id: 1,
-    title: "Shelalekh, Paharpani, Nainital - 263132 uttarakhand",
-  },
-  {
-    id: 2,
-    title: "Nainital - 263132 uttarakhand",
-  },
-];
-
 const Home = () => {
   const [pickup, setPickup] = useState("");
   const [pickupFocused, setPickupFocused] = useState(false);
@@ -58,7 +44,7 @@ const Home = () => {
   const [destniationFocused, setDestinationFocused] = useState(false);
 
   const [pannelOpen, setPannelOpen] = useState(false);
-  const [locations, setLocations] = useState(locationArray);
+  const [locations, setLocations] = useState([]);
 
   const [vehiclePannelOpen, setVehiclePannelOpen] = useState(false);
   const [vehicleData, setVehicleData] = useState(vehicleArray);
@@ -78,13 +64,14 @@ const Home = () => {
   };
 
   const handleLocationClick = (e) => {
+    console.log(e.target.id);
     const findedLocation = locations.find(
-      (item) => item.id === Number(e.target.id)
+      (item) => item.place_id === e.target.id
     );
     if (pickupFocused && findedLocation) {
-      setPickup(findedLocation.title);
+      setPickup(findedLocation.description);
     } else if (destniationFocused && findedLocation) {
-      setDestination(findedLocation.title);
+      setDestination(findedLocation.description);
     }
   };
 
@@ -92,6 +79,40 @@ const Home = () => {
     setPannelOpen(false);
     setVehiclePannelOpen(true);
   };
+
+  const api = useApiPrivate();
+
+  async function getSuggestions(query, controller) {
+    try {
+      const response = await api.get(`/maps/get-suggestion?search=${query}`, {
+        signal: controller.signal,
+      });
+      console.log(response.data);
+      setLocations(response.data?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const handlePickupChange = (e) => {
+    setPickup(e.target.value);
+  };
+
+  const handleDestinationChange = (e) => {
+    setDestination(e.target.value);
+  };
+
+  useEffect(() => {
+    const controller = new AbortController();
+    if (pickup || destination) {
+      if (pickupFocused) getSuggestions(pickup, controller);
+      if (destniationFocused) getSuggestions(destination, controller);
+    }
+
+    return () => {
+      controller.abort();
+    };
+  }, [pickup, destination]);
 
   return (
     <section
@@ -115,7 +136,7 @@ const Home = () => {
           placeholder="Add a pick-up location"
           autoComplete="off"
           value={pickup}
-          onChange={(e) => setPickup(e.target.value)}
+          onChange={handlePickupChange}
           onFocus={handlePickupFocus}
         />
         <InputFeild
@@ -124,7 +145,7 @@ const Home = () => {
           placeholder="Enter your destination"
           autoComplete="off"
           value={destination}
-          onChange={(e) => setDestination(e.target.value)}
+          onChange={handleDestinationChange}
           onFocus={handleDestinationFocus}
         />
         <div className=" flex justify-between">
