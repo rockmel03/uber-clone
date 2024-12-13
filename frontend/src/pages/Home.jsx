@@ -37,6 +37,7 @@ const vehicleArray = [
 ];
 
 const Home = () => {
+  const [debouncedValue, setDebouncedValue] = useState("");
   const [pickup, setPickup] = useState("");
   const [pickupFocused, setPickupFocused] = useState(false);
 
@@ -82,12 +83,11 @@ const Home = () => {
 
   const api = useApiPrivate();
 
-  async function getSuggestions(query, controller) {
+  async function getSuggestions(query, signal) {
     try {
       const response = await api.get(`/maps/get-suggestion?search=${query}`, {
-        signal: controller.signal,
+        signal: signal,
       });
-      console.log(response.data);
       setLocations(response.data?.data);
     } catch (error) {
       console.log(error);
@@ -102,17 +102,33 @@ const Home = () => {
     setDestination(e.target.value);
   };
 
+  // optimization of unneccessary api calls for suggestions
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setDebouncedValue(pickup);
+    }, 500);
+    return () => clearTimeout(timeout);
+  }, [pickup]);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setDebouncedValue(destination);
+    }, 500);
+    return () => clearTimeout(timeout);
+  }, [destination]);
+
   useEffect(() => {
     const controller = new AbortController();
-    if (pickup || destination) {
-      if (pickupFocused) getSuggestions(pickup, controller);
-      if (destniationFocused) getSuggestions(destination, controller);
+    const signal = controller.signal;
+
+    if (debouncedValue) {
+      getSuggestions(debouncedValue, signal);
     }
 
     return () => {
       controller.abort();
     };
-  }, [pickup, destination]);
+  }, [debouncedValue]);
 
   return (
     <section
