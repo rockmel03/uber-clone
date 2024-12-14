@@ -1,9 +1,20 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { VEHICLE_DATA } from "../constants";
 
-export const VehiclePannel = ({ isOpen, vehicleData, setIsOpen }) => {
+const vehicleArray = VEHICLE_DATA;
+
+export const VehiclePannel = ({
+  isOpen,
+  setIsOpen,
+  vehicleFare,
+  handleVehicleClick,
+}) => {
+  const [vehicleData, setVehicleData] = useState(vehicleArray);
+
   const vehiclePannleRef = useRef(null);
+
   useGSAP(() => {
     if (isOpen) {
       gsap.to(vehiclePannleRef.current, {
@@ -35,9 +46,11 @@ export const VehiclePannel = ({ isOpen, vehicleData, setIsOpen }) => {
 
       {vehicleData.length > 0 &&
         vehicleData.map((vehicle, idx) => {
+          const fairAmount = vehicleFare[vehicle.type];
           return (
             <div
               key={idx}
+              onClick={() => handleVehicleClick(vehicle.type)}
               className="grid grid-cols-[1fr_2fr_1fr] items-center p-3 border-2 active:border-black rounded-lg"
             >
               <div>
@@ -63,7 +76,7 @@ export const VehiclePannel = ({ isOpen, vehicleData, setIsOpen }) => {
                 </p>
               </div>
               <h3 className="font-bold text-lg justify-self-end">
-                ₹{vehicle.fairAmount}
+                ₹{fairAmount}
               </h3>
             </div>
           );

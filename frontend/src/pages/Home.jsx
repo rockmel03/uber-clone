@@ -3,38 +3,9 @@ import InputFeild from "../components/InputFeild";
 import { VehiclePannel } from "../components/VehiclePannel";
 import { LocationsPannel } from "../components/LocationsPannel";
 
-import carImage from "../assets/car.webp";
-import autoImage from "../assets/auto.webp";
-import motoImage from "../assets/moto.webp";
 import { SearchForNearbyDrivers } from "../components/SearchForNearbyDrivers";
 import { useApiPrivate } from "../hooks/useApiPrivate";
-
-const vehicleArray = [
-  {
-    title: "UberGo",
-    capacity: 3,
-    type: "car",
-    image: carImage,
-    time: "2 min",
-    fairAmount: 123.1,
-  },
-  {
-    title: "Moto",
-    capacity: 1,
-    type: "motorcycle",
-    image: motoImage,
-    time: "2 min",
-    fairAmount: 65.22,
-  },
-  {
-    title: "Auto",
-    capacity: 3,
-    type: "auto",
-    image: autoImage,
-    time: "2 min",
-    fairAmount: 120.3,
-  },
-];
+import { ConfirmRide } from "../components/ConfirmRide";
 
 const Home = () => {
   const [debouncedValue, setDebouncedValue] = useState("");
@@ -48,9 +19,13 @@ const Home = () => {
   const [locations, setLocations] = useState([]);
 
   const [vehiclePannelOpen, setVehiclePannelOpen] = useState(false);
-  const [vehicleData, setVehicleData] = useState(vehicleArray);
+  const [vehicleFare, setVehicleFare] = useState({});
+  const [vehicleType, setVehicleType] = useState(null);
 
+  const [confirmRidePannelOpen, setConfirmRidePannelOpen] = useState(false);
   const [searchVehiclePannelOpen, setSearchVehiclePannelOpen] = useState(false);
+
+  const [rideData, setRideData] = useState(null);
 
   const handlePickupFocus = () => {
     setPickupFocused(true);
@@ -62,23 +37,6 @@ const Home = () => {
     setDestinationFocused(true);
     setPannelOpen(true);
     setPickupFocused(false);
-  };
-
-  const handleLocationClick = (e) => {
-    console.log(e.target.id);
-    const findedLocation = locations.find(
-      (item) => item.place_id === e.target.id
-    );
-    if (pickupFocused && findedLocation) {
-      setPickup(findedLocation.description);
-    } else if (destniationFocused && findedLocation) {
-      setDestination(findedLocation.description);
-    }
-  };
-
-  const handleNextClick = () => {
-    setPannelOpen(false);
-    setVehiclePannelOpen(true);
   };
 
   const api = useApiPrivate();
@@ -94,12 +52,78 @@ const Home = () => {
     }
   }
 
+  async function getFareByVehicle(pickup, destination) {
+    try {
+      const response = await api.get(
+        `/rides/get-fare?pickup=${decodeURIComponent(
+          pickup
+        )}&destination=${decodeURIComponent(destination)}`
+      );
+
+      console.log(response.data?.data);
+      setVehicleFare(response.data?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function createRide() {
+    try {
+      const response = await api.post("/rides", {
+        pickup,
+        destination,
+        vehicleType,
+      });
+      console.log(response.data);
+      setRideData(response.data?.data);
+    } catch (error) {
+      console.log("error", error);
+    }
+  }
+
   const handlePickupChange = (e) => {
     setPickup(e.target.value);
   };
 
   const handleDestinationChange = (e) => {
     setDestination(e.target.value);
+  };
+
+  const handleLocationClick = (e) => {
+    const findedLocation = locations.find(
+      (item) => item.place_id === e.target.id
+    );
+    if (pickupFocused && findedLocation) {
+      setPickup(findedLocation.description);
+    } else if (destniationFocused && findedLocation) {
+      setDestination(findedLocation.description);
+    }
+  };
+
+  const handleNextClick = async () => {
+    await getFareByVehicle(pickup, destination);
+    setPannelOpen(false);
+    setVehiclePannelOpen(true);
+  };
+
+  const handleVehicleClick = (vehicle) => {
+    setVehicleType(vehicle);
+    setConfirmRidePannelOpen(true);
+  };
+
+  const confirmRide = async () => {
+    await createRide();
+    setConfirmRidePannelOpen(false);
+    setSearchVehiclePannelOpen(true);
+  };
+  const cancleRide = () => {
+    setPickup("");
+    setDestination("");
+    setVehicleType(null);
+    setPannelOpen(false);
+    setVehiclePannelOpen(false);
+    setConfirmRidePannelOpen(false);
+    setSearchVehiclePannelOpen(false);
   };
 
   // optimization of unneccessary api calls for suggestions
@@ -194,10 +218,24 @@ const Home = () => {
       />
       <VehiclePannel
         isOpen={vehiclePannelOpen}
-        vehicleData={vehicleData}
         setIsOpen={setVehiclePannelOpen}
+        vehicleFare={vehicleFare}
+        handleVehicleClick={handleVehicleClick}
       />
-      <SearchForNearbyDrivers isOpen={searchVehiclePannelOpen} />
+      <ConfirmRide
+        isOpen={confirmRidePannelOpen}
+        pickup={pickup}
+        destination={destination}
+        vehicleType={vehicleType}
+        fare={vehicleFare}
+        cancleRide={cancleRide}
+        confirmRide={confirmRide}
+      />
+      <SearchForNearbyDrivers
+        isOpen={searchVehiclePannelOpen}
+        rideData={rideData}
+        vehicleType={vehicleType}
+      />
     </section>
   );
 };
