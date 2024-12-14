@@ -21,3 +21,17 @@ module.exports.createRide = asyncHandler(async (req, res) => {
     .status(201)
     .json(ApiResponse.success(createdRide, "ride created successfully", 201));
 });
+
+module.exports.getFare = asyncHandler(async (req, res) => {
+  const result = validationResult(req);
+  if (!result.isEmpty()) throw ApiError.validationError(result.array());
+
+  const { pickup, destination } = req.query;
+
+  const fare = await rideServices.calculateFare(pickup, destination);
+  if (!fare) throw new ApiError(500, "failed to calculate fare");
+
+  return res
+    .status(200)
+    .json(ApiResponse.success(fare, "fair calculated successfully"));
+});

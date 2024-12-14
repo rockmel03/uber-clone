@@ -36,6 +36,8 @@ async function calculateFare(pickup, destination) {
   return fare;
 }
 
+module.exports.calculateFare = calculateFare;
+
 // generate Otp function
 function generateOtp(num) {
   const min = Math.pow(10, num - 1);

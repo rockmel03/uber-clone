@@ -1,7 +1,7 @@
 const express = require("express");
 const authMiddleware = require("../middlewares/auth.middleware");
 const rideController = require("../controllers/ride.controller");
-const { body } = require("express-validator");
+const { body, query } = require("express-validator");
 
 const router = express.Router();
 
@@ -25,5 +25,22 @@ router
     authMiddleware(),
     rideController.createRide
   );
+
+router.get(
+  "/get-fare",
+  [
+    query("pickup")
+      .isString()
+      .isLength({ min: 3 })
+      .withMessage("pickup is required in query params"),
+
+    query("destination")
+      .isString()
+      .isLength({ min: 3 })
+      .withMessage("destination is required in query params"),
+  ],
+  authMiddleware(),
+  rideController.getFare
+);
 
 module.exports = router;
