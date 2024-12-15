@@ -4,16 +4,19 @@ import "./index.css";
 import App from "./App.jsx";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthContextProvider } from "./context/authContext.jsx";
-import 'remixicon/fonts/remixicon.css'
+import "remixicon/fonts/remixicon.css";
+import { RideContextProvider } from "./context/rideContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <AuthContextProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/*" element={<App />} />
-        </Routes>
-      </BrowserRouter>
+      <RideContextProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/*" element={<App />} />
+          </Routes>
+        </BrowserRouter>
+      </RideContextProvider>
     </AuthContextProvider>
   </StrictMode>
 );

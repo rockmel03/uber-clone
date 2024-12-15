@@ -1,19 +1,30 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { useRef, useState } from "react";
-import { VEHICLE_DATA } from "../constants";
+import { VEHICLE_DATA } from "../../constants";
+import useRideContext from "../../hooks/useRideContext";
+import { RideActionTypes } from "../../context/rideContext";
+import { useNavigate } from "react-router-dom";
 
 const vehicleArray = VEHICLE_DATA;
 
-export const VehiclePannel = ({
-  isOpen,
-  setIsOpen,
-  vehicleFare,
-  handleVehicleClick,
-}) => {
+export const SelectVehicle = () => {
   const [vehicleData, setVehicleData] = useState(vehicleArray);
+  const [isOpen, setIsOpen] = useState(true);
+
+  const { rideState, dispatchRide } = useRideContext();
+  const { fare } = rideState;
 
   const vehiclePannleRef = useRef(null);
+  const navigate = useNavigate();
+
+  const handleVehicleClick = (type) => {
+    dispatchRide({
+      type: RideActionTypes.SET_VEHICLE_TYPE,
+      payload: type,
+    });
+    navigate("/ride/confirm");
+  };
 
   useGSAP(() => {
     if (isOpen) {
@@ -32,7 +43,7 @@ export const VehiclePannel = ({
   return (
     <div
       ref={vehiclePannleRef}
-      className="bg-white fixed z-10 p-5 pt-10 flex flex-col gap-2 translate-y-full"
+      className="bg-white w-full fixed z-10 p-5 pt-10 flex flex-col gap-2 translate-y-full"
     >
       <div
         onClick={() => setIsOpen(false)}
@@ -43,10 +54,12 @@ export const VehiclePannel = ({
         </span>
       </div>
       <h2 className=" text-2xl font-semibold mb-2">Select a vehicle</h2>
-
-      {vehicleData.length > 0 &&
+      {!fare ? (
+        <h1>Loading...</h1>
+      ) : (
+        vehicleData.length > 0 &&
         vehicleData.map((vehicle, idx) => {
-          const fairAmount = vehicleFare[vehicle.type];
+          const fairAmount = fare[vehicle.type];
           return (
             <div
               key={idx}
@@ -80,7 +93,8 @@ export const VehiclePannel = ({
               </h3>
             </div>
           );
-        })}
+        })
+      )}
     </div>
   );
 };
