@@ -21,10 +21,11 @@ async function calculateFare(pickup, destination) {
   const fare = Object.keys(vehicleTypes)
     .map((key) => {
       const vehicle = vehicleTypes[key];
-      const fareValue =
+      const fareValue = Math.round(
         vehicle.baseFare +
-        distance * vehicle.distanceRate +
-        time * vehicle.timeRate;
+          distance * vehicle.distanceRate +
+          time * vehicle.timeRate
+      );
 
       return [key, fareValue];
     })

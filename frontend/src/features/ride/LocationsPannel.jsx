@@ -22,9 +22,9 @@ export const LocationsPannel = (props) => {
   return (
     <div
       ref={locationsPannelRef}
-      className="h-0 w-full  px-5 bg-white overflow-hidden flex flex-col gap-2"
+      className="h-0 w-full px-5 bg-white overflow-hidden flex flex-col gap-2 relative"
     >
-      {props.locations.length > 0 &&
+      {props.locations.length > 0 ? (
         props.locations.map((item) => (
           <div
             key={item.place_id}
@@ -39,7 +39,13 @@ export const LocationsPannel = (props) => {
               {item.description}
             </h4>
           </div>
-        ))}
+        ))
+      ) : (
+        <p className="text-zinc-300 font-bold text-lg text-center absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2">
+          Type anything to <br />
+          get Locations
+        </p>
+      )}
     </div>
   );
 };

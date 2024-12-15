@@ -132,6 +132,13 @@ export const FindATrip = () => {
           onChange={(e) => setDestination(e.target.value)}
           onFocus={handleDestinationFocus}
         />
+        {/* <button
+          disabled={!pickup || !destination}
+          onClick={handleNextClick}
+          className="w-full border rounded-md px-2 py-2 font-semibold bg-black text-white  disabled:opacity-80 disabled:cursor-not-allowed"
+        >
+          Find Trip
+        </button> */}
         <div className=" flex justify-between">
           <button
             onClick={() => setPannelOpen(false)}

@@ -1,6 +1,6 @@
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { VEHICLE_IMAGES } from "../../constants";
 import useRideContext from "../../hooks/useRideContext";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +8,6 @@ import { useNavigate } from "react-router-dom";
 const vehicleImages = VEHICLE_IMAGES;
 
 export const ConfirmRide = () => {
-  const [isOpen, setIsOpen] = useState(true);
   const { rideState, confirmRide, cancelRide } = useRideContext();
 
   const { pickup, destination, vehicleType, fare } = rideState;
@@ -25,27 +24,32 @@ export const ConfirmRide = () => {
     navigate("/");
   };
 
+  const handleGoBack = () => {
+    navigate(-1);
+  };
+
   useGSAP(() => {
-    if (isOpen) {
-      gsap.to(nearbyPannelRef.current, {
-        transform: "translateY(0)",
-        duration: 0.5,
-      });
-    } else {
-      gsap.to(nearbyPannelRef.current, {
-        transform: "translateY(100%)",
-        duration: 0.5,
-      });
-    }
-  }, [isOpen]);
+    gsap.to(nearbyPannelRef.current, {
+      transform: "translateY(0)",
+      duration: 0.5,
+    });
+  }, []);
 
   const condition = pickup && destination && vehicleType && fare;
 
   return (
     <div
       ref={nearbyPannelRef}
-      className="p-5 w-full fixed z-10 translate-y-full bg-white"
+      className="p-5 w-full max-h-screen overflow-auto fixed z-10 translate-y-full bg-white"
     >
+      <button
+        onClick={handleGoBack}
+        className="w-10 h-10 rounded-full hover:bg-zinc-100 active:bg-zinc-100 active:scale-90 cursor-pointer"
+      >
+        <span className="text-2xl">
+          <i className="ri-arrow-left-line"></i>
+        </span>
+      </button>
       <h2 className="text-xl text-center font-semibold">Confirm your Ride</h2>
       {!condition ? (
         <h1>loading....</h1>

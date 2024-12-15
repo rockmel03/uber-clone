@@ -34,67 +34,70 @@ export const SelectVehicle = () => {
       });
     } else {
       gsap.to(vehiclePannleRef.current, {
-        transform: "translateY(100%)",
+        transform: "translateY(90%)",
         duration: 0.5,
       });
     }
   }, [isOpen]);
 
   return (
-    <div
+    <section
       ref={vehiclePannleRef}
-      className="bg-white w-full fixed z-10 p-5 pt-10 flex flex-col gap-2 translate-y-full"
+      className="bg-white w-full fixed z-10 p-5 pt-0 flex flex-col gap-2 translate-y-full"
     >
-      <div
-        onClick={() => setIsOpen(false)}
-        className="w-fit fixed top-0 left-1/2 -translate-x-1/2 text-center"
-      >
+      <button onClick={() => setIsOpen((prev) => !prev)}>
         <span className=" text-3xl text-gray-300">
-          <i className="ri-arrow-down-wide-fill"></i>
+          {isOpen ? (
+            <i className="ri-arrow-down-wide-fill"></i>
+          ) : (
+            <i className="ri-arrow-up-wide-fill"></i>
+          )}
         </span>
-      </div>
-      <h2 className=" text-2xl font-semibold mb-2">Select a vehicle</h2>
-      {!fare ? (
-        <h1>Loading...</h1>
-      ) : (
-        vehicleData.length > 0 &&
-        vehicleData.map((vehicle, idx) => {
-          const fairAmount = fare[vehicle.type];
-          return (
-            <div
-              key={idx}
-              onClick={() => handleVehicleClick(vehicle.type)}
-              className="grid grid-cols-[1fr_2fr_1fr] items-center p-3 border-2 active:border-black rounded-lg"
-            >
-              <div>
-                <img
-                  src={vehicle.image}
-                  alt={vehicle.type}
-                  className=" w-full h-full object-contain"
-                />
-              </div>
-              <div>
-                <h4 className="text-base font-semibold leading-tight">
-                  {vehicle.title}{" "}
-                  <span>
+      </button>
+      <div>
+        <h2 className=" text-2xl font-semibold mb-2">Select a vehicle</h2>
+        {!fare ? (
+          <h1>Loading...</h1>
+        ) : (
+          vehicleData.length > 0 &&
+          vehicleData.map((vehicle, idx) => {
+            const fairAmount = fare[vehicle.type];
+            return (
+              <div
+                key={idx}
+                onClick={() => handleVehicleClick(vehicle.type)}
+                className="grid grid-cols-[1fr_2fr_1fr] items-center p-3 border-2 active:border-black rounded-lg"
+              >
+                <div>
+                  <img
+                    src={vehicle.image}
+                    alt={vehicle.type}
+                    className=" w-full h-full object-contain"
+                  />
+                </div>
+                <div>
+                  <h4 className="text-base font-semibold leading-tight">
+                    {vehicle.title}{" "}
                     <span>
-                      <i className="ri-user-3-fill"></i>
-                    </span>{" "}
-                    <span>{vehicle.capacity}</span>
-                  </span>
-                </h4>
-                <h5 className="text-sm font-medium">2 mins away</h5>
-                <p className="text-xs font-medium opacity-70">
-                  Affordable, compact rides
-                </p>
+                      <span>
+                        <i className="ri-user-3-fill"></i>
+                      </span>{" "}
+                      <span>{vehicle.capacity}</span>
+                    </span>
+                  </h4>
+                  <h5 className="text-sm font-medium">2 mins away</h5>
+                  <p className="text-xs font-medium opacity-70">
+                    Affordable, compact rides
+                  </p>
+                </div>
+                <h3 className="font-bold text-lg justify-self-end">
+                  ₹{fairAmount}
+                </h3>
               </div>
-              <h3 className="font-bold text-lg justify-self-end">
-                ₹{fairAmount}
-              </h3>
-            </div>
-          );
-        })
-      )}
-    </div>
+            );
+          })
+        )}
+      </div>
+    </section>
   );
 };
