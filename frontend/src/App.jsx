@@ -11,6 +11,7 @@ import {
   SearchForNearbyDrivers,
   SelectVehicle,
 } from "./features/ride";
+import { Unauthorized } from "./components/Unauthorized";
 
 const App = () => {
   return (
@@ -18,9 +19,14 @@ const App = () => {
       <Route element={<Layout />}>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route element={<RequireAuth />}>
-          <Route index element={<Home />} />
+        <Route path="/unauthorized" element={<Unauthorized />} />
 
+        {/* protected routes */}
+        <Route element={<RequireAuth allowedRoles={["user", "captain"]} />}>
+          <Route index element={<Home />} />
+        </Route>
+
+        <Route element={<RequireAuth allowedRoles={["user"]} />}>
           <Route path="ride" element={<FindATrip />}>
             <Route path="confirm" element={<ConfirmRide />} />
             <Route path="vehicle">
@@ -31,6 +37,10 @@ const App = () => {
               />
             </Route>
           </Route>
+        </Route>
+
+        <Route element={<RequireAuth allowedRoles={["captain"]} />}>
+          <Route path="captain" element={<h1>welcome captain</h1>} />
         </Route>
       </Route>
     </Routes>
