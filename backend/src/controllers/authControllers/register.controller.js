@@ -6,7 +6,7 @@ const asyncHandler = require("../../utils/asyncHandler");
 const userServices = require("../../services/user.services");
 const captainService = require("../../services/captain.services");
 const ApiResponse = require("../../utils/ApiResponse");
-const { ACCOUNTS_TYPES: ROLES } = require("../../constants");
+const { ACCOUNT_TYPES: ROLES } = require("../../constants");
 
 const register = asyncHandler(async (req, res) => {
   const errors = validationResult(req);
@@ -89,7 +89,7 @@ const register = asyncHandler(async (req, res) => {
     // // If  creation fails, delete the document
     if (user) await User.findByIdAndDelete(user._id);
     if (captain) await Captain.findByIdAndDelete(captain._id);
-
+    
     throw new ApiError(500, "Registration failed", [error]);
   }
 });
