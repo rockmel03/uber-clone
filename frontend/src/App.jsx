@@ -12,6 +12,7 @@ import {
   SelectVehicle,
 } from "./features/ride";
 import { Unauthorized } from "./components/Unauthorized";
+import { Home as CaptainHome, Notification } from "./features/captain";
 
 const App = () => {
   return (
@@ -40,7 +41,9 @@ const App = () => {
         </Route>
 
         <Route element={<RequireAuth allowedRoles={["captain"]} />}>
-          <Route path="captain" element={<h1>welcome captain</h1>} />
+          <Route path="captain" element={<CaptainHome />}>
+            <Route path="notification" element={<Notification />} />
+          </Route>
         </Route>
       </Route>
     </Routes>
