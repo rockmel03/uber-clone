@@ -69,10 +69,8 @@ export const ConfirmRide = () => {
               <i className="ri-map-pin-range-fill"></i>
             </div>
             <div>
-              <h3 className="text-xl font-bold">562/11-A</h3>
-              <p className="text-gray-700 leading-tight">
-                {pickup?.description}
-              </p>
+              <h3 className="text-xl font-semibold">{pickup?.description}</h3>
+              <p className="opacity-70 leading-tight font-semibold">Pickup</p>
             </div>
           </div>
           <hr />
@@ -82,9 +80,11 @@ export const ConfirmRide = () => {
               <i className="ri-stop-fill"></i>
             </div>
             <div>
-              <h3 className="text-xl font-bold">Third Wave Coffee</h3>
-              <p className="text-gray-700 leading-tight">
+              <h3 className="text-xl font-semibold">
                 {destination?.description}
+              </h3>
+              <p className="opacity-70 leading-tight font-semibold">
+                Destination
               </p>
             </div>
           </div>
@@ -94,8 +94,10 @@ export const ConfirmRide = () => {
               <i className="ri-bank-card-2-fill"></i>
             </div>
             <div>
-              <h3 className="text-xl font-bold">₹{fare[vehicleType]}</h3>
-              <p className="text-gray-700 leading-tight">Cash Cash</p>
+              <h3 className="text-xl font-semibold">₹{fare[vehicleType]}</h3>
+              <p className="opacity-70 leading-tight font-semibold">
+                Fare Amount
+              </p>
             </div>
           </div>
           <hr />

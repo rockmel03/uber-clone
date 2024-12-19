@@ -27,7 +27,7 @@ export const VEHICLE_DATA = [
 ];
 
 export const VEHICLE_IMAGES = {
-  car: assets.imagescarImage,
-  auto: assets.imagesautoImage,
-  motorcycle: assets.imagesmotoImage,
+  car: assets.images.carImage,
+  auto: assets.images.autoImage,
+  motorcycle: assets.images.motoImage,
 };

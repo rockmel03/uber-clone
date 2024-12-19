@@ -1,5 +1,5 @@
 import { useGSAP } from "@gsap/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import gsap from "gsap";
 import { VEHICLE_IMAGES } from "../../constants";
@@ -9,24 +9,16 @@ import useSocket from "../../hooks/useSocket";
 const vehicleImages = VEHICLE_IMAGES;
 
 export const SearchForNearbyDrivers = () => {
-  const [isOpen, setIsOpen] = useState(true);
   const { vehicleType } = useParams();
   const { rideData } = useRideContext();
   const nearbyPannelRef = useRef(null);
 
   useGSAP(() => {
-    if (isOpen) {
-      gsap.to(nearbyPannelRef.current, {
-        transform: "translateY(0)",
-        duration: 0.5,
-      });
-    } else {
-      gsap.to(nearbyPannelRef.current, {
-        transform: "translateY(100%)",
-        duration: 0.5,
-      });
-    }
-  }, [isOpen]);
+    gsap.from(nearbyPannelRef.current, {
+      transform: "translateY(100%)",
+      duration: 0.5,
+    });
+  }, []);
 
   const { socket } = useSocket();
 
@@ -36,10 +28,7 @@ export const SearchForNearbyDrivers = () => {
   }, [rideData]);
 
   return (
-    <div
-      ref={nearbyPannelRef}
-      className="p-5 w-full fixed z-10 translate-y-full bg-white"
-    >
+    <div ref={nearbyPannelRef} className="p-5 w-full fixed z-10 bg-white">
       <h2 className="text-xl text-center font-semibold">
         Looking for nearby drivers
       </h2>
@@ -57,8 +46,8 @@ export const SearchForNearbyDrivers = () => {
           <i className="ri-map-pin-range-fill"></i>
         </div>
         <div>
-          <h3 className="text-xl font-bold">562/11-A</h3>
-          <p className="text-gray-700 leading-tight">{rideData?.pickup}</p>
+          <h3 className="text-xl font-semibold">{rideData?.pickup}</h3>
+          <p className="opacity-70 leading-tight font-semibold">Pickup</p>
         </div>
       </div>
       <hr />
@@ -68,8 +57,8 @@ export const SearchForNearbyDrivers = () => {
           <i className="ri-stop-fill"></i>
         </div>
         <div>
-          <h3 className="text-xl font-bold">Third Wave Coffee</h3>
-          <p className="text-gray-700 leading-tight">{rideData?.destination}</p>
+          <h3 className="text-xl font-semibold">{rideData?.destination}</h3>
+          <p className="opacity-70 leading-tight font-semibold">Destination</p>
         </div>
       </div>
       <div className="flex gap-2 items-center py-2">
@@ -77,8 +66,8 @@ export const SearchForNearbyDrivers = () => {
           <i className="ri-bank-card-2-fill"></i>
         </div>
         <div>
-          <h3 className="text-xl font-bold">₹{rideData?.fare}</h3>
-          <p className="text-gray-700 leading-tight">
+          <h3 className="text-xl font-semibold">₹{rideData?.fare}</h3>
+          <p className="opacity-70 leading-tight font-semibold">
             {rideData?.paymentDetails?.status}
           </p>
         </div>
