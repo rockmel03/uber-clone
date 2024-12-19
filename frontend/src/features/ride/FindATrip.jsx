@@ -5,6 +5,8 @@ import { useApiPrivate } from "../../hooks/useApiPrivate";
 import useRideContext from "../../hooks/useRideContext";
 import { RideActionTypes } from "../../context/rideContext";
 import { Outlet, useNavigate } from "react-router-dom";
+import useSocket from "../../hooks/useSocket";
+import useAuth from "../../hooks/useAuth";
 
 export const FindATrip = () => {
   const [debouncedValue, setDebouncedValue] = useState("");
@@ -96,6 +98,15 @@ export const FindATrip = () => {
       controller.abort();
     };
   }, [debouncedValue]);
+
+  const { socket } = useSocket();
+  const { auth } = useAuth();
+
+  useEffect(() => {
+    if (auth?.token && auth?.userId && auth?.roles) {
+      socket.emit("join", { userId: auth.userId, roles: auth?.roles });
+    }
+  }, [auth]);
 
   return (
     <section className="w-full h-screen flex flex-col justify-end">

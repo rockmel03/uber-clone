@@ -6,16 +6,19 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthContextProvider } from "./context/authContext.jsx";
 import "remixicon/fonts/remixicon.css";
 import { RideContextProvider } from "./context/rideContext.jsx";
+import { SocketContextProvider } from "./context/SocketContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <AuthContextProvider>
       <RideContextProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/*" element={<App />} />
-          </Routes>
-        </BrowserRouter>
+        <SocketContextProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/*" element={<App />} />
+            </Routes>
+          </BrowserRouter>
+        </SocketContextProvider>
       </RideContextProvider>
     </AuthContextProvider>
   </StrictMode>
