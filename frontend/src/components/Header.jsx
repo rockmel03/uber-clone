@@ -2,9 +2,11 @@ import { Link } from "react-router-dom";
 import assets from "../assets";
 import { useState } from "react";
 import { NavigationPannel } from "./NavigationPannel";
+import useSocket from "../hooks/useSocket";
 
 export const Header = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
+  const { notifications } = useSocket();
 
   return (
     <>
@@ -18,7 +20,9 @@ export const Header = () => {
             to="/captain/notification"
             className="w-10 h-10 active:bg-zinc-200 duration-150 rounded-full grid place-items-center text-2xl font-semibold relative"
           >
-            <div className="absolute top-1 right-1 bg-red-500 p-[4px] rounded-full"></div>
+            {notifications && notifications?.length > 0 && (
+              <div className="absolute top-1 right-1 bg-red-500 p-[4px] rounded-full"></div>
+            )}
             <i className="ri-notification-3-line"></i>
           </Link>
           <button

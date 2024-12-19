@@ -1,4 +1,16 @@
-export const RideNotificationCard = ({ handleAccept, handleIgnore }) => {
+export const RideNotificationCard = ({ data, handleAccept, handleIgnore }) => {
+  const userName =
+    data?.user?.fullname?.firstname + " " + data?.user?.fullname?.lastname;
+  const pickup =
+    data?.pickup?.length > 30
+      ? data?.pickup?.substring(0, 30) + "..."
+      : data?.pickup;
+  const destination =
+    data?.destination?.length > 30
+      ? data?.destination?.substring(0, 30) + "..."
+      : data?.destination;
+  const fare = data?.fare;
+
   return (
     <div className="p-5 shadow-sm">
       <div className="w-full flex items-center justify-between">
@@ -14,14 +26,14 @@ export const RideNotificationCard = ({ handleAccept, handleIgnore }) => {
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold">Jhone Doe</h3>
+            <h3 className="text-lg font-semibold">{userName}</h3>
             <p className="text-xs opacity-60 font-medium uppercase">
               Looking for a car
             </p>
           </div>
         </div>
         <div className="text-end">
-          <h3 className="text-lg font-semibold">₹325.00</h3>
+          <h3 className="text-lg font-semibold">₹{fare}</h3>
           <p className="text-xs opacity-60 font-medium uppercase">2.3 KM</p>
         </div>
       </div>
@@ -32,7 +44,7 @@ export const RideNotificationCard = ({ handleAccept, handleIgnore }) => {
             <i className="ri-map-pin-range-fill"></i>
           </div>
           <div>
-            <h3 className="text-lg font-semibold">562/11-A</h3>
+            <h3 className="text-lg font-semibold">{pickup}</h3>
             <p className="opacity-70 leading-tight font-semibold">Pickup</p>
           </div>
         </div>
@@ -42,7 +54,7 @@ export const RideNotificationCard = ({ handleAccept, handleIgnore }) => {
             <i className="ri-stop-fill"></i>
           </div>
           <div>
-            <h3 className="text-lg font-semibold">Third Wave Coffee</h3>
+            <h3 className="text-lg font-semibold">{destination}</h3>
             <p className="opacity-70 leading-tight font-semibold">
               Destination
             </p>

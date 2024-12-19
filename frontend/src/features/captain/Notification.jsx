@@ -1,11 +1,12 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { RideNotificationCard } from "./RideNotificationCard";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import useSocket from "../../hooks/useSocket";
 
 export const Notification = () => {
-  const [notifications, setNotifications] = useState([1, 2, 4, 5, 6]);
+  const { notifications } = useSocket();
 
   const containerRef = useRef(null);
   const navigate = useNavigate();
@@ -54,8 +55,9 @@ export const Notification = () => {
         notifications.map((item, idx) => (
           <RideNotificationCard
             key={idx}
-            handleAccept={handleAccept}
-            handleIgnore={handleIgnore}
+            data={item?.data}
+            handleAccept={() => handleAccept(item?.data?._id)}
+            handleIgnore={() => handleIgnore(item?.data?._id)}
           />
         ))}
     </section>

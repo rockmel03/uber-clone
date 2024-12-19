@@ -17,9 +17,13 @@ module.exports.createRide = asyncHandler(async (req, res) => {
     destination,
     vehicleType,
   });
-  return res
+
+  res
     .status(201)
     .json(ApiResponse.success(createdRide, "ride created successfully", 201));
+
+  // send message to captains
+  await rideServices.sendRideMessageToCaptains(createdRide);
 });
 
 module.exports.getFare = asyncHandler(async (req, res) => {

@@ -5,6 +5,8 @@ const Payment = require("../models/payment.model");
 const Ride = require("../models/ride.model");
 const ApiError = require("../utils/ApiError");
 const mapServices = require("./maps.services");
+const { sendmessage } = require("../socket");
+const { distinct } = require("../models/user.model");
 
 // function to calculate fare
 async function calculateFare(pickup, destination) {
@@ -114,7 +116,60 @@ module.exports.get = async (rideId) => {
         preserveNullAndEmptyArrays: true,
       },
     },
+    {
+      $lookup: {
+        from: "users",
+        localField: "user",
+        foreignField: "_id",
+        as: "user",
+        pipeline: [
+          {
+            $project: {
+              password: false,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $unwind: {
+        path: "$user",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $project: {
+        user: 1,
+        captain: 1,
+        paymentDetails: 1,
+        pickup: 1,
+        destination: 1,
+        fare: 1,
+        status: 1,
+        duration: 1,
+        distance: 1,
+        otp: 1,
+      },
+    },
   ]);
 
   return ride[0];
+};
+
+module.exports.sendRideMessageToCaptains = async (rideData) => {
+  delete rideData.otp; // remove sensitive feild
+
+  const coords = await mapServices.getAddressCoordinates(rideData?.pickup);
+  const captains = await mapServices.getCaptainsInTheRadius(
+    coords.ltd,
+    coords.lng,
+    200 //20 km
+  );
+  console.log(coords, captains);
+  captains.forEach((captain) => {
+    // send message to all captains by socketId
+    const socketId = captain?.captainDetails?.socketId;
+    console.log(socketId);
+    sendmessage("new-ride", socketId, rideData);
+  });
 };

@@ -8,6 +8,17 @@ export const Home = () => {
   const { socket } = useSocket();
   const { auth } = useAuth();
 
+  const updateLocation = (userId) => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        socket.emit("update-location", userId, {
+          ltd: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+      });
+    }
+  };
+
   useEffect(() => {
     if (!auth.token) return;
 
@@ -15,6 +26,16 @@ export const Home = () => {
     if (userId && roles) {
       socket.emit("join", { userId, roles });
     }
+
+    updateLocation(userId);
+    const interval = setInterval(() => {
+      console.log("updating location....");
+      updateLocation(userId);
+    }, 10000);
+
+    return () => {
+      clearInterval(interval);
+    };
   }, [auth]);
 
   return (

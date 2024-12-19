@@ -1,4 +1,4 @@
-import { createContext, useEffect } from "react";
+import { createContext, useEffect, useState } from "react";
 import io from "socket.io-client";
 
 export const SocketContext = createContext();
@@ -6,6 +6,7 @@ export const SocketContext = createContext();
 const baseUrl = import.meta.env.VITE_SERVER_BASE_URL;
 
 export const SocketContextProvider = ({ children }) => {
+  const [notifications, setNotifications] = useState([]);
   const socket = io(baseUrl, {
     autoConnect: false,
   });
@@ -36,9 +37,14 @@ export const SocketContextProvider = ({ children }) => {
     socket.on("join", (data) => {
       console.log(data);
     });
+
+    socket.on("new-ride", (data) => {
+      console.log("new-ride : ", data);
+      setNotifications((prev) => [...prev, { type: "new-ride", data }]);
+    });
   }, []);
   return (
-    <SocketContext.Provider value={{ socket }}>
+    <SocketContext.Provider value={{ socket, notifications, setNotifications }}>
       {children}
     </SocketContext.Provider>
   );

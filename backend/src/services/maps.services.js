@@ -1,5 +1,6 @@
 const axios = require("axios");
 const ApiError = require("../utils/ApiError");
+const Captain = require("../models/captain.model");
 
 const apiKey = process.env.GOOGLE_MAPS_API_KEY;
 
@@ -9,7 +10,7 @@ module.exports.getAddressCoordinates = async (address) => {
   )}&key=${apiKey}`;
   try {
     const response = await axios.get(url);
-    console.log(response?.data?.results[0]?.geometry?.location);
+    // console.log("address coords : " ,response?.data?.results[0]?.geometry?.location);
     const location = response?.data?.results[0]?.geometry?.location;
 
     return {
@@ -54,4 +55,38 @@ module.exports.getAutoCompleteSuggestion = async (input) => {
   } catch (error) {
     throw new ApiError(500, "Internal Server Error", error.message);
   }
+};
+
+module.exports.getCaptainsInTheRadius = async (ltd, lng, radius) => {
+  // radius in km
+  if (!ltd && !lng && !radius)
+    throw new Error("ltd, lng and radius all are required");
+
+  const captains = await Captain.aggregate([
+    {
+      $match: {
+        location: {
+          $geoWithin: {
+            $centerSphere: [[ltd, lng], radius / 6371],
+          },
+        },
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        foreignField: "_id",
+        localField: "userId",
+        as: "captainDetails",
+      },
+    },
+    {
+      $unwind: {
+        path: "$captainDetails",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+  ]);
+
+  return captains;
 };

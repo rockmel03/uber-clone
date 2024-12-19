@@ -1,9 +1,10 @@
 import { useGSAP } from "@gsap/react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import gsap from "gsap";
 import { VEHICLE_IMAGES } from "../../constants";
 import useRideContext from "../../hooks/useRideContext";
+import useSocket from "../../hooks/useSocket";
 
 const vehicleImages = VEHICLE_IMAGES;
 
@@ -26,6 +27,13 @@ export const SearchForNearbyDrivers = () => {
       });
     }
   }, [isOpen]);
+
+  const { socket } = useSocket();
+
+  useEffect(() => {
+    console.log(rideData);
+    if (rideData.length > 0) socket.emit("search-ride", rideData);
+  }, [rideData]);
 
   return (
     <div
