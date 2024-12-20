@@ -29,7 +29,6 @@ export const Home = () => {
 
     updateLocation(userId);
     const interval = setInterval(() => {
-      console.log("updating location....");
       updateLocation(userId);
     }, 10000);
 

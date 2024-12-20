@@ -1,4 +1,5 @@
 import { createContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import io from "socket.io-client";
 
 export const SocketContext = createContext();
@@ -15,15 +16,15 @@ export const SocketContextProvider = ({ children }) => {
     socket.connect();
 
     socket.on("connection", (meassage) => {
-      console.log("message : ", meassage);
+      toast.success(meassage);
     });
 
     socket.on("message", (meassage) => {
-      console.log("message : ", meassage);
+      toast.info(meassage);
     });
 
-    socket.on("disconnect", (reason, description) => {
-      console.log("socket disconnected : ", reason, description);
+    socket.on("disconnect", (reason, data) => {
+      toast(reason + " : " + data.description);
     });
 
     // clean up
@@ -39,7 +40,13 @@ export const SocketContextProvider = ({ children }) => {
     });
 
     socket.on("new-ride", (data) => {
-      console.log("new-ride : ", data);
+      toast.info("You have a new ride request", {
+        data: data,
+        autoClose: false,
+        style: {
+          backgroundColor: "orange",
+        },
+      });
       setNotifications((prev) => [...prev, { type: "new-ride", data }]);
     });
   }, []);

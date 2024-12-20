@@ -3,6 +3,7 @@ import gsap from "gsap";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useApiPrivate } from "../../hooks/useApiPrivate";
+import { toast } from "react-toastify";
 
 export const RideDetails = () => {
   const { rideId } = useParams();
@@ -27,10 +28,10 @@ export const RideDetails = () => {
   const fetchRideData = async (id) => {
     try {
       const resoponse = await api.get(`/rides/${id}`);
-      console.log(resoponse);
       if (resoponse.status === 200) setRide(resoponse.data.data);
     } catch (error) {
-      console.log(error);
+      console.error("failed to fetch ride data", error);
+      toast.error("failed to fetch ride data");
     }
   };
 

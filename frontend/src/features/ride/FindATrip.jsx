@@ -7,6 +7,7 @@ import { RideActionTypes } from "../../context/rideContext";
 import { Outlet, useNavigate } from "react-router-dom";
 import useSocket from "../../hooks/useSocket";
 import useAuth from "../../hooks/useAuth";
+import { toast } from "react-toastify";
 
 export const FindATrip = () => {
   const [debouncedValue, setDebouncedValue] = useState("");
@@ -55,7 +56,8 @@ export const FindATrip = () => {
       });
       setLocations(response.data?.data);
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      toast.error("failed to get suggestions");
     }
   }
 

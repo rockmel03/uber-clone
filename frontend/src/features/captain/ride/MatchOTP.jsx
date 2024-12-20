@@ -4,6 +4,7 @@ import { useApiPrivate } from "../../../hooks/useApiPrivate";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { VerifyOtpPannel } from "./VerifyOtpPannel";
+import { toast } from "react-toastify";
 
 export const MatchOTP = () => {
   const { rideId } = useParams();
@@ -33,10 +34,9 @@ export const MatchOTP = () => {
   const fetchRideData = async (id) => {
     try {
       const resoponse = await api.get(`/rides/${id}`);
-      console.log(resoponse);
       if (resoponse.status === 200) setRide(resoponse.data.data);
     } catch (error) {
-      console.log(error);
+      toast.error(error.message || "failed to fetch ride");
     }
   };
 

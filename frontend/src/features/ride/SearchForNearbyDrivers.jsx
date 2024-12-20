@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { VEHICLE_IMAGES } from "../../constants";
 import useRideContext from "../../hooks/useRideContext";
 import useSocket from "../../hooks/useSocket";
+import { toast } from "react-toastify";
 
 const vehicleImages = VEHICLE_IMAGES;
 
@@ -27,9 +28,8 @@ export const SearchForNearbyDrivers = () => {
   const { socket } = useSocket();
 
   useEffect(() => {
-    console.log(rideData);
     socket.on("ride-accepted", (data) => {
-      console.log("ride-accepted : ", data);
+      toast.success("Ride Accepted");
       navigate(`/ride/${data._id}`, { from: { pathname: from } });
     });
 

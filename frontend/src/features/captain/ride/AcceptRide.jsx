@@ -3,6 +3,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { useApiPrivate } from "../../../hooks/useApiPrivate";
+import { toast } from "react-toastify";
 
 export const AcceptRide = () => {
   const { rideId } = useParams();
@@ -28,12 +29,11 @@ export const AcceptRide = () => {
   const handleAccept = async (id) => {
     try {
       const response = await api.post("/rides/accept", { rideId: id });
-      console.log(response);
       if (response.status === 200) {
         navigate(`/captain/rides/otp/${id}`);
       }
     } catch (error) {
-      console.log(error);
+      toast.error(error?.response?.data?.error || "failed to accept ride");
     }
   };
 
@@ -41,12 +41,12 @@ export const AcceptRide = () => {
     const fetchRide = async (id) => {
       try {
         const response = await api.get(`/rides/${id}`);
-        console.log(response.data.data);
         if (response.status === 200) {
           setRide(response.data.data);
         }
       } catch (error) {
         console.log("failed to fetch ride", error);
+        toast.error("failed to fetch ride");
       }
     };
 
@@ -110,8 +110,6 @@ export const AcceptRide = () => {
         </p>
         <h3 className="text-lg font-semibold">{ride?.destination}</h3>
         <hr className="my-3" />
-
-        
       </div>
       <button
         disabled={ride?.status === "pending" ? false : true}
