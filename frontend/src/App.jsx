@@ -10,9 +10,15 @@ import {
   FindATrip,
   SearchForNearbyDrivers,
   SelectVehicle,
+  RideDetails,
 } from "./features/ride";
 import { Unauthorized } from "./components/Unauthorized";
-import { Home as CaptainHome, Notification } from "./features/captain";
+import {
+  AcceptRide,
+  Home as CaptainHome,
+  MatchOTP,
+  Notification,
+} from "./features/captain";
 
 const App = () => {
   return (
@@ -37,12 +43,17 @@ const App = () => {
                 element={<SearchForNearbyDrivers />}
               />
             </Route>
+            <Route path=":rideId" element={<RideDetails />} />
           </Route>
         </Route>
 
         <Route element={<RequireAuth allowedRoles={["captain"]} />}>
           <Route path="captain" element={<CaptainHome />}>
             <Route path="notification" element={<Notification />} />
+            <Route path="rides">
+              <Route path="accept/:rideId" element={<AcceptRide />} />
+              <Route path="otp/:rideId" element={<MatchOTP />} />
+            </Route>
           </Route>
         </Route>
       </Route>

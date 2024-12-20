@@ -1,6 +1,6 @@
 import { useGSAP } from "@gsap/react";
 import { useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import gsap from "gsap";
 import { VEHICLE_IMAGES } from "../../constants";
 import useRideContext from "../../hooks/useRideContext";
@@ -13,6 +13,10 @@ export const SearchForNearbyDrivers = () => {
   const { rideData } = useRideContext();
   const nearbyPannelRef = useRef(null);
 
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location?.from?.pathname || "/";
+
   useGSAP(() => {
     gsap.from(nearbyPannelRef.current, {
       transform: "translateY(100%)",
@@ -24,7 +28,24 @@ export const SearchForNearbyDrivers = () => {
 
   useEffect(() => {
     console.log(rideData);
-    if (rideData.length > 0) socket.emit("search-ride", rideData);
+    socket.on("ride-accepted", (data) => {
+      console.log("ride-accepted : ", data);
+      navigate(`/ride/${data._id}`, { from: { pathname: from } });
+    });
+
+    let timeOut;
+    if (rideData?.length > 0) {
+      socket.emit("search-ride", rideData);
+
+      timeOut = setTimeout(() => {
+        socket.emit("search-ride", rideData);
+      }, 10000);
+    }
+
+    return () => {
+      socket.removeListener("ride-accepted");
+      if (timeOut) clearTimeout(timeOut);
+    };
   }, [rideData]);
 
   return (

@@ -13,16 +13,26 @@ export const Notification = () => {
   const location = useLocation();
   const from = location?.from?.pathname || -1;
 
-  const handleIgnore = (id) => {
+  const removeFromNotification = (id) => {
     setNotifications((prev) => {
       const filteredData = prev.filter((item) => {
         return item?.data?._id !== id;
       });
-     
+
       return filteredData;
     });
   };
-  const handleAccept = () => {};
+
+  const handleIgnore = (id) => {
+    removeFromNotification(id);
+  };
+  const handleAccept = async (id) => {
+    removeFromNotification(id);
+    navigate(`/captain/rides/accept/${id}`, {
+      from: { pathname: "/captain" },
+      replace: true,
+    });
+  };
 
   const handleGoBack = () => {
     navigate(from);
