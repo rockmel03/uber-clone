@@ -3,6 +3,8 @@ const asyncHandler = require("../utils/asyncHandler");
 const ApiError = require("../utils/ApiError");
 const rideServices = require("../services/ride.services");
 const ApiResponse = require("../utils/ApiResponse");
+const Ride = require("../models/ride.model");
+const { sendmessage } = require("../socket");
 
 module.exports.createRide = asyncHandler(async (req, res) => {
   const result = validationResult(req);
@@ -38,4 +40,44 @@ module.exports.getFare = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(ApiResponse.success(fare, "fair calculated successfully"));
+});
+
+module.exports.acceptRide = asyncHandler(async (req, res) => {
+  const result = validationResult(req);
+  if (!result.isEmpty()) throw ApiError.validationError(result.array());
+
+  const { rideId } = req.body;
+
+  const ride = await Ride.findById(rideId);
+  if (!ride) throw ApiError.notFoundError("ride");
+
+  ride.captain = req.user._id;
+  ride.status = "accepted";
+
+  await ride.save();
+
+  const rideData = await rideServices.get(ride._id);
+  delete rideData.otp;
+
+  res.status(200).json(ApiResponse.success(rideData, "ride accepted"));
+
+  // send message to user
+  sendmessage("ride-accepted", rideData?.user?.socketId, rideData);
+});
+
+module.exports.getRide = asyncHandler(async (req, res) => {
+  const result = validationResult(req);
+  if (!result.isEmpty()) throw ApiError.validationError(result.array());
+
+  const { rideId } = req.params;
+
+  const ride = await Ride.findById(rideId);
+  if (!ride) throw ApiError.notFoundError("ride");
+
+  let rideData = await rideServices.get(ride._id);
+  if (req.user?.roles?.includes("captain")) {
+    rideData = { ...rideData };
+    delete rideData.otp;
+  }
+  res.status(200).json(ApiResponse.success(rideData));
 });

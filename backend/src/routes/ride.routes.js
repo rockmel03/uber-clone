@@ -1,7 +1,7 @@
 const express = require("express");
 const authMiddleware = require("../middlewares/auth.middleware");
 const rideController = require("../controllers/ride.controller");
-const { body, query } = require("express-validator");
+const { body, query, param } = require("express-validator");
 
 const router = express.Router();
 
@@ -42,5 +42,18 @@ router.get(
   authMiddleware(),
   rideController.getFare
 );
+
+router.post(
+  "/accept",
+  body("rideId").isMongoId().withMessage("rideId is required"),
+  authMiddleware(),
+  rideController.acceptRide
+);
+
+router.get("/:rideId", [
+  param("rideId").isMongoId().withMessage("rideId is required"),
+  authMiddleware(),
+  rideController.getRide,
+]);
 
 module.exports = router;

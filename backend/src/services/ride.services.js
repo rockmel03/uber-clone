@@ -138,6 +138,46 @@ module.exports.get = async (rideId) => {
       },
     },
     {
+      $lookup: {
+        from: "users",
+        localField: "captain",
+        foreignField: "_id",
+        as: "captain",
+        pipeline: [
+          {
+            $lookup: {
+              from: "captains",
+              localField: "captain",
+              foreignField: "_id",
+              as: "details",
+            },
+          },
+          {
+            $unwind: {
+              path: "$details",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              fullname: 1,
+              email: 1,
+              socketId: 1,
+              roles: 1,
+              details: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $unwind: {
+        path: "$captain",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
       $project: {
         user: 1,
         captain: 1,
