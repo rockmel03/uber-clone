@@ -4,3 +4,4 @@ export * from "./Notification";
 export * from "./CaptainNav";
 export * from "./ride/AcceptRide";
 export * from "./ride/MatchOTP";
+export * from "./ride/CaptainRiding";

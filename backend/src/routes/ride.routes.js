@@ -56,4 +56,17 @@ router.get("/:rideId", [
   rideController.getRide,
 ]);
 
+router
+  .route("/otp/:rideId")
+  .post(
+    [
+      param("rideId").isMongoId().withMessage("rideId is required"),
+      body("otp")
+        .isLength({ min: 6, max: 6 })
+        .withMessage("OTP is required, make sure otp is 6 digit long"),
+    ],
+    authMiddleware(),
+    rideController.verifyOtp
+  );
+
 module.exports = router;

@@ -3,7 +3,7 @@ import gsap from "gsap";
 import { useEffect, useRef, useState } from "react";
 
 export const VerifyOtpPannel = ({ isOpen, setIsOpen, verifyOtp }) => {
-  const [otp, setOtp] = useState(null);
+  const [otp, setOtp] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const popupRef = useRef(null);
   const InputFeildRef = useRef(null);
@@ -33,6 +33,7 @@ export const VerifyOtpPannel = ({ isOpen, setIsOpen, verifyOtp }) => {
     else if (otp.length !== 6) setErrorMsg("OTP must be 6 digits long");
     verifyOtp(otp);
   };
+
   return (
     <div
       id="otp-pannel"

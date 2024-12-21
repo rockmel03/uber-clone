@@ -27,8 +27,18 @@ export const MatchOTP = () => {
 
   const api = useApiPrivate();
 
-  const verifyOtp = (otp) => {
-    console.log("otp : ", otp);
+  const verifyOtp = async (otp) => {
+    try {
+      const resoponse = await api.post(`/rides/otp/${rideId}`, { otp });
+
+      if (resoponse.status === 200) {
+        toast.success("OTP Verified");
+        navigate(`/captain/rides/riding/${rideId}`);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(error?.response?.data?.message || "failed to verify otp");
+    }
   };
 
   const fetchRideData = async (id) => {

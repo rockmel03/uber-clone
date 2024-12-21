@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useApiPrivate } from "../../hooks/useApiPrivate";
 import { toast } from "react-toastify";
+import useSocket from "../../hooks/useSocket";
 
 export const RideDetails = () => {
   const { rideId } = useParams();
@@ -38,6 +39,17 @@ export const RideDetails = () => {
   useEffect(() => {
     if (rideId) fetchRideData(rideId);
   }, [rideId]);
+
+  const { socket } = useSocket();
+  useEffect(() => {
+    socket.on("otp-verified", (res) => {
+      toast.success(res?.message);
+      navigate(`/ride/${res.data._id}/riding`);
+    });
+    return () => {
+      socket.removeListener("otp-verified");
+    };
+  }, []);
 
   return (
     <section

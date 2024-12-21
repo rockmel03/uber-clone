@@ -81,3 +81,34 @@ module.exports.getRide = asyncHandler(async (req, res) => {
   }
   res.status(200).json(ApiResponse.success(rideData));
 });
+
+module.exports.verifyOtp = asyncHandler(async (req, res) => {
+  const result = validationResult(req);
+  if (!result.isEmpty()) throw ApiError.validationError(result.array());
+
+  const { rideId } = req.params;
+  const { otp } = req.body;
+
+  const ride = await Ride.findById(rideId).select(["+otp"]);
+  if (!ride) throw ApiError.notFoundError("ride");
+  console.log("otp: ", otp, ride);
+
+  if (ride.captain.toString() !== req.user._id.toString()) {
+    throw new ApiError(403, "You are not authorized to do this action");
+  }
+  const isOtpMatch = Number(otp) === ride.otp;
+  if (!isOtpMatch) throw new ApiError(403, "invalid OTP");
+
+  ride.status = "ongoing";
+  await ride.save();
+
+  res.status(200).json(ApiResponse.success({}, "OTP verified successfully"));
+
+  const rideData = await rideServices.get(rideId);
+
+  // send message
+  sendmessage("otp-verified", rideData?.user?.socketId, {
+    message: "otp verified",
+    data: rideData,
+  });
+});

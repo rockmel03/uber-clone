@@ -11,11 +11,13 @@ import {
   SearchForNearbyDrivers,
   SelectVehicle,
   RideDetails,
+  Riding,
 } from "./features/ride";
 import { Unauthorized } from "./components/Unauthorized";
 import {
   AcceptRide,
   Home as CaptainHome,
+  CaptainRiding,
   MatchOTP,
   Notification,
 } from "./features/captain";
@@ -44,6 +46,7 @@ const App = () => {
               />
             </Route>
             <Route path=":rideId" element={<RideDetails />} />
+            <Route path=":rideId/riding" element={<Riding />} />
           </Route>
         </Route>
 
@@ -53,6 +56,7 @@ const App = () => {
             <Route path="rides">
               <Route path="accept/:rideId" element={<AcceptRide />} />
               <Route path="otp/:rideId" element={<MatchOTP />} />
+              <Route path="riding/:rideId" element={<CaptainRiding />} />
             </Route>
           </Route>
         </Route>
