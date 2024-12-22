@@ -16,7 +16,7 @@ export const VerifyOtpButton = () => {
   const verifyOtp = async (otp) => {
     try {
       const response = await api.post(`/rides/otp/${rideData?._id}`, { otp });
-      console.log(response.data);
+      
       if (response.status === 200) {
         toast.success("OTP Verified");
         setRideData(response?.data?.data);

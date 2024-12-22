@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import { useApiPrivate } from "./useApiPrivate";
 
 export const useLogout = () => {
@@ -8,7 +9,7 @@ export const useLogout = () => {
       localStorage.removeItem("token");
       return response;
     } catch (error) {
-      console.log(error);
+      toast.error(error?.response?.data?.message || "Logout Failed");
     }
   };
 

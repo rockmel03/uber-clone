@@ -13,12 +13,12 @@ export const FinishRideButton = () => {
   const handleFinishRideClick = async () => {
     try {
       const response = await api.post(`/rides/finish/${rideData?._id}`);
-      console.log(response.data);
+      
       if (response.status === 200) {
         navigate("/");
       }
     } catch (error) {
-      console.log(error);
+      
       toast(error?.response?.data?.message || "failed to finish ride");
     }
   };

@@ -203,13 +203,13 @@ module.exports.sendRideMessageToCaptains = async (rideData) => {
   const captains = await mapServices.getCaptainsInTheRadius(
     coords.ltd,
     coords.lng,
-    200 //20 km
+    6 //6 km
   );
-  console.log(coords, captains);
+
   captains.forEach((captain) => {
     // send message to all captains by socketId
     const socketId = captain?.captainDetails?.socketId;
-    console.log(socketId);
+    
     sendmessage("new-ride", socketId, rideData);
   });
 };

@@ -13,7 +13,7 @@ export const AcceptRideButton = () => {
   const handleAccept = async (id) => {
     try {
       const response = await api.post("/rides/accept", { rideId: id });
-      console.log(response.data);
+      
       if (response.status === 200) {
         setRideData(response?.data?.data);
         navigate(`/rides/${response?.data?.data._id}/verify`);

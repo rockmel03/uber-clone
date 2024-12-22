@@ -45,7 +45,7 @@ export const Register = () => {
   const registerUser = async (data) => {
     try {
       const response = await api.post("/auth/register", data);
-      console.log(response);
+     
       // set data to state
       const { token, user } = response.data.data;
       setAuth({ token, user });
@@ -72,7 +72,7 @@ export const Register = () => {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
+
     const {
       firstname,
       lastname,
@@ -110,7 +110,7 @@ export const Register = () => {
         color: vColor,
       };
     }
-    console.log(data);
+
     // register user
     await registerUser(data);
   };

@@ -10,7 +10,6 @@ module.exports.getAddressCoordinates = async (address) => {
   )}&key=${apiKey}`;
   try {
     const response = await axios.get(url);
-    // console.log("address coords : " ,response?.data?.results[0]?.geometry?.location);
     const location = response?.data?.results[0]?.geometry?.location;
 
     return {
@@ -50,8 +49,7 @@ module.exports.getAutoCompleteSuggestion = async (input) => {
 
   try {
     const response = await axios.get(url);
-    console.log(response.data?.predictions);
-    return response.data?.predictions;
+    return response?.data?.predictions;
   } catch (error) {
     throw new ApiError(500, "Internal Server Error", error.message);
   }

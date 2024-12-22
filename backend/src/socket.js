@@ -31,7 +31,7 @@ function IinitializeSocketIo(server) {
       } catch (error) {
         console.error(error);
       }
-      socket.emit("message", "joined successfully, id : " + socket.id);
+      socket.emit("message", "joined successfully");
     });
 
     socket.on("update-location", async (userId, location) => {
@@ -43,7 +43,6 @@ function IinitializeSocketIo(server) {
         lng: location.lng,
       };
       await Captain.findOneAndUpdate({ userId }, { location: newLocation });
-      socket.emit("message", "updated location");
     });
 
     socket.on("search-ride", async (rideData) => {

@@ -34,17 +34,15 @@ export const Login = () => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     if (!email || !password) return setErrMsg("All feilds are required");
-    console.log(email, password);
+
     try {
       const response = await api.post("/auth/login", { email, password });
-      console.log(response);
       const { token, user } = response.data.data;
       setAuth({ token, user });
       setEmail("");
       setPassword("");
       navigate(from, { replace: true });
     } catch (error) {
-      console.log(error);
       setErrMsg(error.response?.data?.message || "Login Failed");
     }
   };
