@@ -69,4 +69,12 @@ router
     rideController.verifyOtp
   );
 
+router
+  .route("/finish/:rideId")
+  .post(
+    param("rideId").isMongoId().withMessage("rideId is required"),
+    authMiddleware(),
+    rideController.finishRide
+  );
+
 module.exports = router;

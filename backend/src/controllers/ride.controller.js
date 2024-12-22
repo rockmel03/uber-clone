@@ -91,7 +91,6 @@ module.exports.verifyOtp = asyncHandler(async (req, res) => {
 
   const ride = await Ride.findById(rideId).select(["+otp"]);
   if (!ride) throw ApiError.notFoundError("ride");
-  console.log("otp: ", otp, ride);
 
   if (ride.captain.toString() !== req.user._id.toString()) {
     throw new ApiError(403, "You are not authorized to do this action");
@@ -109,6 +108,33 @@ module.exports.verifyOtp = asyncHandler(async (req, res) => {
   // send message
   sendmessage("otp-verified", rideData?.user?.socketId, {
     message: "otp verified",
+    data: rideData,
+  });
+});
+
+module.exports.finishRide = asyncHandler(async (req, res) => {
+  const result = validationResult(req);
+  if (!result.isEmpty()) throw ApiError.validationError(result.array());
+
+  const { rideId } = req.params;
+
+  const ride = await Ride.findById(rideId);
+  if (!ride) throw ApiError.notFoundError("ride");
+
+  if (ride.captain.toString() !== req.user._id.toString()) {
+    throw new ApiError(403, "You are not authorized to do this action");
+  }
+
+  ride.status = "completed";
+  await ride.save();
+
+  res.status(200).json(ApiResponse.success({}, "OTP verified successfully"));
+
+  const rideData = await rideServices.get(rideId);
+
+  // send message
+  sendmessage("ride-finished", rideData?.user?.socketId, {
+    message: "ride finished",
     data: rideData,
   });
 });
