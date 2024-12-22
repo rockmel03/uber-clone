@@ -5,6 +5,7 @@ const rideServices = require("../services/ride.services");
 const ApiResponse = require("../utils/ApiResponse");
 const Ride = require("../models/ride.model");
 const { sendmessage } = require("../socket");
+const { RIDE_STATUS_ENUM } = require("../constants");
 
 module.exports.createRide = asyncHandler(async (req, res) => {
   const result = validationResult(req);
@@ -52,7 +53,7 @@ module.exports.acceptRide = asyncHandler(async (req, res) => {
   if (!ride) throw ApiError.notFoundError("ride");
 
   ride.captain = req.user._id;
-  ride.status = "accepted";
+  ride.status = RIDE_STATUS_ENUM.accepted;
 
   await ride.save();
 
@@ -98,12 +99,14 @@ module.exports.verifyOtp = asyncHandler(async (req, res) => {
   const isOtpMatch = Number(otp) === ride.otp;
   if (!isOtpMatch) throw new ApiError(403, "invalid OTP");
 
-  ride.status = "ongoing";
+  ride.status = RIDE_STATUS_ENUM.ongoing;
   await ride.save();
 
-  res.status(200).json(ApiResponse.success({}, "OTP verified successfully"));
-
   const rideData = await rideServices.get(rideId);
+
+  res
+    .status(200)
+    .json(ApiResponse.success(rideData, "OTP verified successfully"));
 
   // send message
   sendmessage("otp-verified", rideData?.user?.socketId, {
@@ -125,7 +128,7 @@ module.exports.finishRide = asyncHandler(async (req, res) => {
     throw new ApiError(403, "You are not authorized to do this action");
   }
 
-  ride.status = "completed";
+  ride.status = RIDE_STATUS_ENUM.completed;
   await ride.save();
 
   res.status(200).json(ApiResponse.success({}, "OTP verified successfully"));

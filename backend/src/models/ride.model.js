@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { RIDE_STATUS } = require("../constants");
 
 const rideSchema = new mongoose.Schema({
   user: {
@@ -24,7 +25,7 @@ const rideSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["pending", "accepted", "ongoing", "completed", "cancelled"],
+    enum: RIDE_STATUS,
     default: "pending",
   },
   duration: {

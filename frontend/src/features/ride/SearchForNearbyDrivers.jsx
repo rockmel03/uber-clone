@@ -11,7 +11,7 @@ const vehicleImages = VEHICLE_IMAGES;
 
 export const SearchForNearbyDrivers = () => {
   const { vehicleType } = useParams();
-  const { rideData } = useRideContext();
+  const { rideData, setRideData } = useRideContext();
   const nearbyPannelRef = useRef(null);
 
   const navigate = useNavigate();
@@ -29,8 +29,9 @@ export const SearchForNearbyDrivers = () => {
 
   useEffect(() => {
     socket.on("ride-accepted", (data) => {
+      setRideData(data);
       toast.success("Ride Accepted");
-      navigate(`/ride/${data._id}`, { from: { pathname: from } });
+      navigate(`/rides/${data._id}`, { from: { pathname: from } });
     });
 
     let timeOut;

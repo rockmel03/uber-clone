@@ -26,9 +26,10 @@ export const Notification = () => {
   const handleIgnore = (id) => {
     removeFromNotification(id);
   };
+
   const handleAccept = async (id) => {
     removeFromNotification(id);
-    navigate(`/captain/rides/accept/${id}`, {
+    navigate(`/rides/${id}/accept`, {
       from: { pathname: "/captain" },
       replace: true,
     });

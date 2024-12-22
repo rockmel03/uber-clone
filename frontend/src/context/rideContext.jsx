@@ -117,6 +117,7 @@ export const RideContextProvider = ({ children }) => {
         rideState,
         dispatchRide,
         rideData,
+        setRideData,
         confirmRide,
         cancelRide,
         getFare,

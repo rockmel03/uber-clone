@@ -2,6 +2,7 @@ export * from "./Dashboard/Dashboard";
 export * from "./Home";
 export * from "./Notification";
 export * from "./CaptainNav";
-export * from "./ride/AcceptRide";
-export * from "./ride/MatchOTP";
-export * from "./ride/CaptainRiding";
+
+export * from "./ride/AcceptRideButton";
+export * from "./ride/VerifyOtpButton";
+export * from "./ride/FinishRideButton";

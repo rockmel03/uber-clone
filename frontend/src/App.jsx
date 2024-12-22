@@ -10,17 +10,18 @@ import {
   FindATrip,
   SearchForNearbyDrivers,
   SelectVehicle,
-  RideDetails,
-  Riding,
 } from "./features/ride";
 import { Unauthorized } from "./components/Unauthorized";
 import {
-  AcceptRide,
+  AcceptRideButton,
   Home as CaptainHome,
-  CaptainRiding,
-  MatchOTP,
+  FinishRideButton,
   Notification,
+  VerifyOtpButton,
 } from "./features/captain";
+
+import { RideDetails } from "./components/RideDetails";
+import { Payment } from "./components/Payment";
 
 const App = () => {
   return (
@@ -33,6 +34,14 @@ const App = () => {
         {/* protected routes */}
         <Route element={<RequireAuth allowedRoles={["user", "captain"]} />}>
           <Route index element={<Home />} />
+          <Route path="rides/:rideId" element={<RideDetails />}>
+            <Route element={<RequireAuth allowedRoles={["captain"]} />}>
+              <Route path="accept" element={<AcceptRideButton />} />
+              <Route path="verify" element={<VerifyOtpButton />} />
+              <Route path="ongoing" element={<FinishRideButton />} />
+            </Route>
+            <Route path="payment" element={<Payment />} />
+          </Route>
         </Route>
 
         <Route element={<RequireAuth allowedRoles={["user"]} />}>
@@ -45,19 +54,12 @@ const App = () => {
                 element={<SearchForNearbyDrivers />}
               />
             </Route>
-            <Route path=":rideId" element={<RideDetails />} />
-            <Route path=":rideId/riding" element={<Riding />} />
           </Route>
         </Route>
 
         <Route element={<RequireAuth allowedRoles={["captain"]} />}>
           <Route path="captain" element={<CaptainHome />}>
             <Route path="notification" element={<Notification />} />
-            <Route path="rides">
-              <Route path="accept/:rideId" element={<AcceptRide />} />
-              <Route path="otp/:rideId" element={<MatchOTP />} />
-              <Route path="riding/:rideId" element={<CaptainRiding />} />
-            </Route>
           </Route>
         </Route>
       </Route>
