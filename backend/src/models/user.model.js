@@ -62,7 +62,7 @@ userShema.pre("save", function (next) {
 
 userShema.methods.generateAuthToken = function () {
   const token = jwt.sign(
-    { _id: this._id, roles: this.roles },
+    { _id: this._id, roles: this.roles, fullname: this.fullname },
     process.env.JWT_SECRET,
     {
       expiresIn: "24h",

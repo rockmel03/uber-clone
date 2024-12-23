@@ -1,53 +1,44 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { DashboardButtom } from "./Dashboard/DashboardButtom";
-
-import { useLogout } from "../../hooks/useLogout";
+import { useLogout } from "../hooks/useLogout";
 
 const navLinks = [
   {
     name: "home",
-    url: "/captain",
+    url: "/",
     icon: "",
     iconElement: <i className="ri-home-5-line"></i>,
   },
   {
     name: "profile",
-    url: "/captain/profile",
+    url: "/profile",
     icon: "",
     iconElement: <i className="ri-profile-line"></i>,
   },
   {
     name: "notification",
-    url: "/captain/notification",
+    url: "/notification",
     icon: "",
     iconElement: <i className="ri-notification-3-line"></i>,
   },
   {
     name: "history",
-    url: "/captain/history",
+    url: "/history",
     icon: "",
     iconElement: <i className="ri-history-line"></i>,
   },
 ];
 
-export const CaptainNav = ({ closeNavPannel }) => {
-  const navigate = useNavigate();
+export const SideNav = ({ closeNavPannel }) => {
   const logout = useLogout();
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     await logout();
     navigate("/login");
   };
+
   return (
     <nav className="w-full h-full ">
-      <div className="px-5">
-        <DashboardButtom
-          totalTime={10.5}
-          totalDistance={"30 km"}
-          totalRides={20}
-        />
-      </div>
-      <br />
       <ul
         onClickCapture={() => closeNavPannel()}
         className="flex flex-col px-5 gap-1"
