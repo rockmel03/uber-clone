@@ -12,7 +12,7 @@ const navLinks = [
   },
   {
     name: "profile",
-    url: "/captain/profile",
+    url: "/profile",
     icon: "",
     iconElement: <i className="ri-profile-line"></i>,
   },

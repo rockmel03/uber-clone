@@ -22,6 +22,7 @@ import {
 
 import { RideDetails } from "./components/RideDetails";
 import { Payment } from "./components/Payment";
+import { Profile } from "./pages/Profile";
 
 const App = () => {
   return (
@@ -34,6 +35,7 @@ const App = () => {
         {/* protected routes */}
         <Route element={<RequireAuth allowedRoles={["user", "captain"]} />}>
           <Route index element={<Home />} />
+          <Route path="profile" element={<Profile />} />
           <Route path="rides/:rideId" element={<RideDetails />}>
             <Route element={<RequireAuth allowedRoles={["captain"]} />}>
               <Route path="accept" element={<AcceptRideButton />} />

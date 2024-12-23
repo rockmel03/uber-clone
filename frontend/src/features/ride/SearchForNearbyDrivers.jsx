@@ -11,7 +11,7 @@ import { useApiPrivate } from "../../hooks/useApiPrivate";
 const vehicleImages = VEHICLE_IMAGES;
 
 export const SearchForNearbyDrivers = () => {
-  const [fetching, setFetching] = useState(true);
+  const [fetching, setFetching] = useState(false);
 
   const { rideData, setRideData } = useRideContext();
   const nearbyPannelRef = useRef(null);
@@ -36,8 +36,6 @@ export const SearchForNearbyDrivers = () => {
 
     let interval;
     if (rideData && Object.keys(rideData).length > 0) {
-      socket.emit("search-ride", rideData);
-
       interval = setInterval(() => {
         socket.emit("search-ride", rideData);
       }, 30000);
@@ -52,6 +50,7 @@ export const SearchForNearbyDrivers = () => {
 
   useEffect(() => {
     const fetchRideData = async () => {
+      setFetching(true);
       try {
         const res = await api.get(`/rides/${id}`);
         setRideData(res.data.data);

@@ -43,6 +43,15 @@ module.exports.captainProfile = async (userId) => {
         localField: "captain", // Field in users to join on (stores captain._id)
         foreignField: "_id", // Field in captains to join on
         as: "captain", // The resulting array field name
+        pipeline: [
+          {
+            $project: {
+              _id: 1,
+              status: 1,
+              vehicle: 1,
+            },
+          },
+        ],
       },
     },
     {
@@ -53,10 +62,14 @@ module.exports.captainProfile = async (userId) => {
     },
     {
       $project: {
-        password: 0, // Exclude the password field
+        _id: 1,
+        fullname: 1,
+        roles: 1,
+        email: 1,
+        captain: 1,
       },
     },
   ]);
 
-  return captainData;
+  return captainData[0];
 };
