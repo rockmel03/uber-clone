@@ -8,6 +8,7 @@ import useAuth from "../hooks/useAuth";
 import useRideContext from "../hooks/useRideContext";
 import useSocket from "../hooks/useSocket";
 import { RIDE_STATUS_ENUM } from "../constants";
+import { LiveTracking } from "../features/maps/LiveTracking";
 
 export const RideDetails = () => {
   const { rideId } = useParams();
@@ -56,12 +57,8 @@ export const RideDetails = () => {
     <p className="text-red-500">ride not found</p>
   ) : (
     <section className="w-full h-screen flex flex-col justify-end">
-      <div className="bg-zinc-400 w-full h-full fixed -z-[1]">
-        <img
-          src="https://media.wired.com/photos/59269cd37034dc5f91bec0f1/master/w_1920,c_limit/GoogleMapTA.jpg"
-          alt=""
-          className="w-full h-full object-cover"
-        />
+      <div className="bg-zinc-400 w-full h-full fixed ">
+        <LiveTracking />
       </div>
       <DropDownPannel>
         <RideDetail ride={ride} isCaptain={isCaptain} />

@@ -19,7 +19,7 @@ export const useApiPrivate = () => {
       (res) => res,
       async (error) => {
         // const req = error.config;
-        if (error.response.status === 401) {
+        if (error?.response?.status === 401) {
           localStorage.removeItem("token");
           setAuth({});
         }
