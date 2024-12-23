@@ -7,6 +7,7 @@ const ApiError = require("../utils/ApiError");
 const mapServices = require("./maps.services");
 const { sendmessage } = require("../socket");
 const { distinct } = require("../models/user.model");
+const User = require("../models/user.model");
 
 // function to calculate fare
 async function calculateFare(pickup, destination) {
@@ -73,6 +74,7 @@ module.exports.create = async ({
       user: userId,
       pickup,
       destination,
+      vehicleType,
       fare,
       otp,
     });
@@ -184,6 +186,7 @@ module.exports.get = async (rideId) => {
         paymentDetails: 1,
         pickup: 1,
         destination: 1,
+        vehicleType: 1,
         fare: 1,
         status: 1,
         duration: 1,
@@ -205,11 +208,21 @@ module.exports.sendRideMessageToCaptains = async (rideData) => {
     coords.lng,
     6 //6 km
   );
+  // send messages to user
+  const user = await User.findById(rideData?.user);
+  sendmessage(
+    "message",
+    user.socketId,
+    `${captains?.length} captains are available`
+  );
 
   captains.forEach((captain) => {
+    // send to only those have same vehicle
+    if (captain?.vehicle?.vehicleType !== rideData.vehicleType) return;
+
     // send message to all captains by socketId
     const socketId = captain?.captainDetails?.socketId;
-    
+
     sendmessage("new-ride", socketId, rideData);
   });
 };

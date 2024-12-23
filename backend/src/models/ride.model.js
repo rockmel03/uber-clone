@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { RIDE_STATUS } = require("../constants");
+const { RIDE_STATUS, VEHICLE_TYPES } = require("../constants");
 
 const rideSchema = new mongoose.Schema({
   user: {
@@ -17,6 +17,11 @@ const rideSchema = new mongoose.Schema({
   },
   destination: {
     type: String,
+    required: true,
+  },
+  vehicleType: {
+    type: String,
+    enum: VEHICLE_TYPES,
     required: true,
   },
   fare: {
