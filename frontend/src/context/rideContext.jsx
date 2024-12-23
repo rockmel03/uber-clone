@@ -86,6 +86,7 @@ export const RideContextProvider = ({ children }) => {
     });
 
     setRideData(data);
+    return data;
   };
 
   const cancelRide = async () => {

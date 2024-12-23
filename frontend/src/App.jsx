@@ -49,10 +49,7 @@ const App = () => {
             <Route path="confirm" element={<ConfirmRide />} />
             <Route path="vehicle">
               <Route path="select" element={<SelectVehicle />} />
-              <Route
-                path="search/:vehicleType"
-                element={<SearchForNearbyDrivers />}
-              />
+              <Route path="search" element={<SearchForNearbyDrivers />} />
             </Route>
           </Route>
         </Route>

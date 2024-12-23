@@ -213,7 +213,7 @@ module.exports.sendRideMessageToCaptains = async (rideData) => {
   sendmessage(
     "message",
     user.socketId,
-    `${captains?.length} captains are available`
+    `Available Captains : ${captains?.length}`
   );
 
   captains.forEach((captain) => {

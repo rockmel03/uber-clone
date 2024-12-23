@@ -15,8 +15,10 @@ export const ConfirmRide = () => {
   const navigate = useNavigate();
 
   const handleConfirmRideClick = async () => {
-    await confirmRide();
-    navigate(`/ride/vehicle/search/${vehicleType}`);
+    const data = await confirmRide();
+    navigate(
+      `/ride/vehicle/search?id=${data?._id}&vehicleType=${data?.vehicleType}`
+    );
   };
 
   const handleCancelRideClick = () => {
