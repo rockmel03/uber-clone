@@ -2,6 +2,7 @@ const socketIo = require("socket.io");
 const User = require("./models/user.model");
 const Captain = require("./models/captain.model");
 const rideServices = require("./services/ride.services");
+const { logger } = require("./utils/logger");
 
 let io;
 function IinitializeSocketIo(server) {
@@ -13,7 +14,7 @@ function IinitializeSocketIo(server) {
   });
 
   io.on("connection", (socket) => {
-    console.log("a client connected : ", socket.id);
+    logger.info("a client connected : ", socket.id);
 
     socket.on("join", async (data) => {
       if (!data) return;
@@ -57,7 +58,7 @@ function IinitializeSocketIo(server) {
     });
 
     socket.on("disconnect", () => {
-      console.log("a client disconnected : ", socket.id);
+      logger.info("a client disconnected : ", socket.id);
     });
   });
 }
@@ -67,7 +68,7 @@ function sendmessage(eventname, socketId, message) {
     console.log(eventname, socketId, message);
     io.to(socketId).emit(eventname, message);
   } else {
-    console.log("socket.io not initialize yet....");
+    logger.error("socket.io not initialize yet....");
   }
 }
 
