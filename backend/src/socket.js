@@ -14,7 +14,10 @@ function IinitializeSocketIo(server) {
   });
 
   io.on("connection", (socket) => {
-    logger.info("a client connected : ", socket.id);
+    logger.log({
+      level: "debug",
+      message: "a client connected : " + socket.id,
+    });
 
     socket.on("join", async (data) => {
       if (!data) return;
@@ -58,14 +61,17 @@ function IinitializeSocketIo(server) {
     });
 
     socket.on("disconnect", () => {
-      logger.info("a client disconnected : ", socket.id);
+      logger.log({
+        level: "debug",
+        message: "a client disconnected : " + socket.id,
+      });
     });
   });
 }
 
 function sendmessage(eventname, socketId, message) {
   if (io) {
-    console.log(eventname, socketId, message);
+    logger.log("debug", JSON.stringify({ eventname, socketId, message }));
     io.to(socketId).emit(eventname, message);
   } else {
     logger.error("socket.io not initialize yet....");
